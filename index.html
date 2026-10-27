@@ -3,141 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Disposable Pro Cam</title>
+    <title>Disposable Pro Cam + Frame</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
-        :root {
-            --bg: #111;
-            --accent: #ffcc00;
-            --ui-bg: rgba(20, 20, 20, 0.85);
-        }
+        :root { --bg: #111; --accent: #ffcc00; --ui-bg: rgba(20, 20, 20, 0.85); }
         * { box-sizing: border-box; }
         body, html {
-            margin: 0; padding: 0;
-            width: 100%; height: 100%;
-            background-color: var(--bg);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: var(--bg); color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             overflow-x: hidden;
-            color: white;
         }
 
-        /* App Layout */
-        .app-container {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            height: 100dvh; /* Mobile fix */
-        }
+        .app-container { display: flex; flex-direction: column; height: 100vh; height: 100dvh; }
 
         /* Top Bar */
         .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            background: var(--ui-bg);
-            backdrop-filter: blur(10px);
-            z-index: 10;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 15px; background: var(--ui-bg); backdrop-filter: blur(10px); z-index: 10;
         }
+        .top-bar-center { font-size: 14px; font-weight: bold; letter-spacing: 2px; }
         .icon-btn {
-            background: none; border: none; color: white;
-            font-size: 24px; cursor: pointer;
-            transition: 0.2s;
+            background: none; border: none; color: white; font-size: 22px; cursor: pointer; transition: 0.2s;
         }
-        .icon-btn:active { transform: scale(0.8); color: var(--accent); }
-        .flash-active { color: #f1c40f; text-shadow: 0 0 10px rgba(241, 196, 15, 0.5); }
+        .icon-btn:active { transform: scale(0.8); }
+        .active-icon { color: var(--accent); text-shadow: 0 0 10px rgba(241, 196, 15, 0.6); }
 
-        /* Viewfinder (Camera Live View) */
-        .viewfinder {
-            position: relative;
-            flex: 1;
-            width: 100%;
-            background: #000;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        video {
-            width: 100%; height: 100%;
-            object-fit: cover;
-        }
-        /* Date Stamp on Live View */
+        /* Viewfinder */
+        .viewfinder { position: relative; flex: 1; width: 100%; background: #000; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        video { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+        
+        /* Frame Preview in Live View */
+        .viewfinder.frame-mode video { width: 85%; height: 80%; object-fit: cover; border: 15px solid #f4f4f4; border-bottom-width: 60px; border-radius: 4px; background: #f4f4f4; box-shadow: 0 0 20px rgba(0,0,0,0.8); }
+
         .live-date {
-            position: absolute;
-            bottom: 15px; right: 20px;
-            font-family: 'Share Tech Mono', monospace;
-            color: #ff5e00;
-            font-size: 1.2rem;
-            text-shadow: 1px 1px 4px rgba(255, 94, 0, 0.8);
-            letter-spacing: 2px;
-            z-index: 2;
+            position: absolute; bottom: 20px; right: 25px; font-family: 'Share Tech Mono', monospace;
+            color: #ff5e00; font-size: 1.2rem; text-shadow: 1px 1px 4px rgba(255, 94, 0, 0.8); z-index: 2;
         }
-        .screen-flash {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: white; opacity: 0; pointer-events: none; z-index: 10;
-        }
+        .viewfinder.frame-mode .live-date { bottom: 85px; right: 12%; } /* Adjust date position when frame is on */
+        .screen-flash { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: white; opacity: 0; pointer-events: none; z-index: 10; }
 
         /* Bottom Controls */
         .bottom-bar {
-            background: var(--ui-bg);
-            padding: 20px 20px 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            border-top: 1px solid #333;
+            background: var(--ui-bg); padding: 20px 20px 40px; display: flex; flex-direction: column; align-items: center; gap: 20px; border-top: 1px solid #333;
         }
         select {
-            appearance: none;
-            background: #222; color: var(--accent);
-            border: 1px solid var(--accent);
-            padding: 10px 20px; border-radius: 20px;
-            font-size: 14px; font-weight: bold; text-align: center;
-            outline: none; cursor: pointer;
+            appearance: none; background: #222; color: var(--accent); border: 1px solid var(--accent); padding: 10px 20px; border-radius: 20px; font-size: 14px; font-weight: bold; text-align: center; outline: none; cursor: pointer; width: 220px;
         }
-        .shutter-container {
-            display: flex; justify-content: center; align-items: center;
-            width: 100%; position: relative;
-        }
-        .shutter-btn {
-            width: 75px; height: 75px;
-            border-radius: 50%;
-            background: white;
-            border: 4px solid #ccc;
-            outline: 4px solid white; outline-offset: 4px;
-            cursor: pointer;
-            transition: all 0.1s ease;
-        }
+        .shutter-container { display: flex; justify-content: center; align-items: center; width: 100%; position: relative; }
+        .shutter-btn { width: 75px; height: 75px; border-radius: 50%; background: white; border: 4px solid #ccc; outline: 4px solid white; outline-offset: 4px; cursor: pointer; transition: all 0.1s ease; }
         .shutter-btn:active { background: #ddd; transform: scale(0.95); }
-        
-        .gallery-btn {
-            position: absolute; right: 0;
-            width: 50px; height: 50px;
-            border-radius: 10px; overflow: hidden;
-            border: 2px solid white;
-            background: #333; cursor: pointer;
-        }
+        .gallery-btn { position: absolute; right: 0; width: 50px; height: 50px; border-radius: 10px; overflow: hidden; border: 2px solid white; background: #333; cursor: pointer; }
         .gallery-btn img { width: 100%; height: 100%; object-fit: cover; }
 
         /* Gallery Overlay */
-        .gallery-overlay {
-            position: fixed; top: 100%; left: 0; width: 100%; height: 100%;
-            background: var(--bg); z-index: 100;
-            transition: top 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            display: flex; flex-direction: column;
+        .full-overlay {
+            position: fixed; top: 100%; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 100; transition: top 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); display: flex; flex-direction: column;
         }
-        .gallery-overlay.open { top: 0; }
-        .gallery-header {
-            padding: 20px; display: flex; justify-content: space-between;
-            border-bottom: 1px solid #333;
-        }
-        .gallery-grid {
-            padding: 10px; display: grid; grid-template-columns: repeat(2, 1fr);
-            gap: 10px; overflow-y: auto; flex: 1;
-        }
+        .full-overlay.open { top: 0; }
+        .overlay-header { padding: 20px; display: flex; justify-content: space-between; border-bottom: 1px solid #333; align-items: center; }
+        .gallery-grid { padding: 10px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; overflow-y: auto; flex: 1; }
         .gallery-grid img { width: 100%; border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+
+        /* Info Content */
+        .info-content { padding: 20px; overflow-y: auto; line-height: 1.6; color: #ddd; }
+        .info-content h3 { color: var(--accent); margin-bottom: 5px; }
+        .info-content ul { padding-left: 20px; }
+        .info-content li { margin-bottom: 10px; }
 
         canvas { display: none; }
     </style>
@@ -148,8 +81,10 @@
         <!-- Top Bar -->
         <div class="top-bar">
             <button class="icon-btn" id="flash-btn">⚡</button>
-            <span style="font-size: 14px; font-weight: bold; letter-spacing: 1px;">FILM CAM</span>
+            <button class="icon-btn" id="frame-btn">🖼️</button>
+            <span class="top-bar-center">FILM CAM</span>
             <button class="icon-btn" id="flip-btn">🔄</button>
+            <button class="icon-btn" id="info-btn">ℹ️</button>
         </div>
 
         <!-- Viewfinder -->
@@ -178,12 +113,39 @@
     </div>
 
     <!-- Gallery Overlay -->
-    <div class="gallery-overlay" id="gallery-overlay">
-        <div class="gallery-header">
+    <div class="full-overlay" id="gallery-overlay">
+        <div class="overlay-header">
             <h2>Camera Roll</h2>
             <button class="icon-btn" id="close-gallery-btn">✖</button>
         </div>
         <div class="gallery-grid" id="gallery-grid"></div>
+    </div>
+
+    <!-- Info Overlay -->
+    <div class="full-overlay" id="info-overlay">
+        <div class="overlay-header">
+            <h2>Film Info</h2>
+            <button class="icon-btn" id="close-info-btn">✖</button>
+        </div>
+        <div class="info-content">
+            <h3>📸 Tentang Aplikasi</h3>
+            <p>Simulasi kamera *disposable* (sekali pakai) berbasis web. Filter di-*burn* langsung ke dalam gambar akhir.</p>
+            
+            <h3>🎞️ Resep Film</h3>
+            <ul>
+                <li><strong>Kodak Gold 200:</strong> Tone kuning hangat, kontras medium, dan bayangan vintage.</li>
+                <li><strong>Fujicolor Superia 800:</strong> Karakter warna kehijauan (cyan/green tint) dengan kontras yang lebih tajam ala film Fuji saku.</li>
+                <li><strong>McCurry Kodachrome:</strong> Kontras sangat tinggi dengan warna merah yang *punchy* dan mencolok.</li>
+            </ul>
+
+            <h3>✨ Fitur Tambahan</h3>
+            <ul>
+                <li><strong>Flash (⚡):</strong> Menambahkan efek *vignette* ekstrem (tengah sangat terang, ujung gelap gulita).</li>
+                <li><strong>Frame (🖼️):</strong> Menambahkan bingkai kertas putih ala foto instan/Polaroid dengan stempel nama film di bawahnya.</li>
+                <li><strong>Light Leaks:</strong> Ada kemungkinan acak 30% munculnya gradasi cahaya kemerahan di pinggir foto (efek film bocor cahaya).</li>
+                <li><strong>Date Stamp:</strong> Tanggal hari ini otomatis tercetak menggunakan format digital warna oranye di pojok foto.</li>
+            </ul>
+        </div>
     </div>
 
     <canvas id="canvas"></canvas>
@@ -193,169 +155,180 @@
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         const snapBtn = document.getElementById('snap');
-        const flashBtn = document.getElementById('flash-btn');
-        const flipBtn = document.getElementById('flip-btn');
-        const recipeSelect = document.getElementById('film-recipe');
+        const viewfinder = document.getElementById('viewfinder');
         const screenFlash = document.getElementById('screen-flash');
         const liveDate = document.getElementById('live-date');
-        const galleryThumb = document.getElementById('gallery-thumb');
-        const galleryGrid = document.getElementById('gallery-grid');
-        const galleryOverlay = document.getElementById('gallery-overlay');
+        
+        // Buttons
+        const flashBtn = document.getElementById('flash-btn');
+        const frameBtn = document.getElementById('frame-btn');
+        const flipBtn = document.getElementById('flip-btn');
+        const infoBtn = document.getElementById('info-btn');
+        const recipeSelect = document.getElementById('film-recipe');
         
         let currentFacingMode = "environment";
         let isFlashOn = false;
+        let isFrameOn = false;
 
-        // Set Format Tanggal Analog (Contoh: '98 10 27)
+        // Tanggal Analog ('YY MM DD)
         function updateDate() {
             const d = new Date();
-            const year = String(d.getFullYear()).slice(2);
-            const month = String(d.getMonth() + 1).padStart(2, '0');
-            const day = String(d.getDate()).padStart(2, '0');
-            liveDate.innerText = `'${year} ${month} ${day}`;
+            liveDate.innerText = `'${String(d.getFullYear()).slice(2)} ${String(d.getMonth() + 1).padStart(2, '0')} ${String(d.getDate()).padStart(2, '0')}`;
         }
         updateDate();
 
         // Inisialisasi Kamera
         async function initCamera() {
             try {
-                if (video.srcObject) {
-                    video.srcObject.getTracks().forEach(track => track.stop());
-                }
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: currentFacingMode, width: { ideal: 1920 }, height: { ideal: 1080 } } 
-                });
+                if (video.srcObject) video.srcObject.getTracks().forEach(track => track.stop());
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: currentFacingMode, width: { ideal: 1920 } } });
                 video.srcObject = stream;
-            } catch (err) {
-                alert("Gagal mengakses kamera. Pastikan izin diberikan.");
-            }
+            } catch (err) { alert("Izinkan kamera untuk menggunakan aplikasi."); }
         }
         initCamera();
 
-        // Balik Kamera
+        // Toggle Flash
+        flashBtn.addEventListener('click', () => {
+            isFlashOn = !isFlashOn;
+            flashBtn.classList.toggle('active-icon', isFlashOn);
+        });
+
+        // Toggle Frame
+        frameBtn.addEventListener('click', () => {
+            isFrameOn = !isFrameOn;
+            frameBtn.classList.toggle('active-icon', isFrameOn);
+            viewfinder.classList.toggle('frame-mode', isFrameOn);
+        });
+
+        // Flip Cam
         flipBtn.addEventListener('click', () => {
             currentFacingMode = currentFacingMode === "user" ? "environment" : "user";
             initCamera();
-            // Efek mirror jika kamera depan
             video.style.transform = currentFacingMode === "user" ? "scaleX(-1)" : "scaleX(1)";
         });
 
-        // Toggle Flash UI
-        flashBtn.addEventListener('click', () => {
-            isFlashOn = !isFlashOn;
-            if(isFlashOn) {
-                flashBtn.classList.add('flash-active');
-                flashBtn.innerText = '⚡ ON';
-            } else {
-                flashBtn.classList.remove('flash-active');
-                flashBtn.innerText = '⚡';
-            }
-        });
+        // Modals Logic
+        document.getElementById('open-gallery-btn').addEventListener('click', () => document.getElementById('gallery-overlay').classList.add('open'));
+        document.getElementById('close-gallery-btn').addEventListener('click', () => document.getElementById('gallery-overlay').classList.remove('open'));
+        infoBtn.addEventListener('click', () => document.getElementById('info-overlay').classList.add('open'));
+        document.getElementById('close-info-btn').addEventListener('click', () => document.getElementById('info-overlay').classList.remove('open'));
 
-        // Buka/Tutup Galeri
-        document.getElementById('open-gallery-btn').addEventListener('click', () => {
-            galleryOverlay.classList.add('open');
-        });
-        document.getElementById('close-gallery-btn').addEventListener('click', () => {
-            galleryOverlay.classList.remove('open');
-        });
-
-        // Ambil Foto
+        // Snap Foto
         snapBtn.addEventListener('click', () => {
-            // Animasi Flash di layar
-            screenFlash.style.transition = 'none';
-            screenFlash.style.opacity = '1';
-            setTimeout(() => {
-                screenFlash.style.transition = 'opacity 0.5s ease-out';
-                screenFlash.style.opacity = '0';
-            }, 50);
+            screenFlash.style.transition = 'none'; screenFlash.style.opacity = '1';
+            setTimeout(() => { screenFlash.style.transition = 'opacity 0.6s ease-out'; screenFlash.style.opacity = '0'; }, 50);
 
-            // Set canvas resolusi tinggi (maks 1920 untuk performa)
-            const ratio = video.videoWidth / video.videoHeight;
-            canvas.width = Math.min(1920, video.videoWidth);
-            canvas.height = canvas.width / ratio;
-
+            const vw = Math.min(1920, video.videoWidth);
+            const vh = vw / (video.videoWidth / video.videoHeight);
             const recipe = recipeSelect.value;
+            const recipeText = recipeSelect.options[recipeSelect.selectedIndex].text;
 
-            // 1. Mirroring canvas jika kamera depan
+            // Hitung Padding jika Frame aktif
+            let padX = 0, padYTop = 0, padYBot = 0;
+            if (isFrameOn) {
+                padX = vw * 0.05;    // Sisi kiri & kanan
+                padYTop = padX;      // Sisi atas
+                padYBot = vw * 0.22; // Sisi bawah lebih tebal
+            }
+
+            canvas.width = vw + (padX * 2);
+            canvas.height = vh + padYTop + padYBot;
+
+            // Gambar Background Bingkai
+            if (isFrameOn) {
+                ctx.fillStyle = '#f4f4f4'; // Warna kertas foto
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Tambahkan teks nama film di bingkai bawah
+                ctx.fillStyle = '#888';
+                ctx.font = `bold ${canvas.width * 0.035}px Courier`;
+                ctx.textAlign = 'center';
+                ctx.fillText(recipeText, canvas.width / 2, canvas.height - (padYBot / 2.5));
+            }
+
+            // Simpan State Canvas untuk area Foto (Video)
             ctx.save();
+            ctx.beginPath();
+            ctx.rect(padX, padYTop, vw, vh); // Batasi filter hanya di dalam area video (bukan di bingkai)
+            ctx.clip();
+
+            // Mirroring jika kamera depan
             if (currentFacingMode === "user") {
                 ctx.translate(canvas.width, 0);
                 ctx.scale(-1, 1);
             }
-            
-            // 2. Filter Dasar (CSS)
+
+            // Filter Native Dasar
             if (recipe === 'kodak') ctx.filter = 'contrast(1.1) saturate(1.3) sepia(0.2)';
             else if (recipe === 'fuji') ctx.filter = 'contrast(1.2) saturate(0.9) sepia(0.15) hue-rotate(10deg)';
             else if (recipe === 'kodachrome') ctx.filter = 'contrast(1.4) saturate(1.2) brightness(0.9) sepia(0.1)';
             else ctx.filter = 'none';
 
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            ctx.restore(); // Restore arah dan hilangkan filter native untuk overlay
-            ctx.filter = 'none';
+            // Gambar Video
+            ctx.drawImage(video, padX, padYTop, vw, vh);
+            
+            // Hapus mirroring & filter native agar tidak berantakan ke overlay
+            ctx.restore(); 
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(padX, padYTop, vw, vh);
+            ctx.clip(); // Potong ulang di koordinat normal untuk overlay warna
 
             if (recipe !== 'none') {
-                // 3. Efek Flash (Tengah terang) & Vignette
-                const cx = canvas.width / 2;
-                const cy = canvas.height / 2;
-                const r = Math.max(canvas.width, canvas.height);
+                // 1. Flash & Vignette
+                const cx = padX + vw / 2;
+                const cy = padYTop + vh / 2;
+                const r = Math.max(vw, vh);
                 const vignette = ctx.createRadialGradient(cx, cy, r * 0.2, cx, cy, r * 0.7);
                 
                 if (isFlashOn) {
-                    // Flash menyala: Tengah sangat terang, pinggiran sangat gelap
                     vignette.addColorStop(0, 'rgba(255,255,255,0.15)');
                     vignette.addColorStop(0.5, 'rgba(0,0,0,0)');
                     vignette.addColorStop(1, 'rgba(0,0,0,0.8)');
                 } else {
-                    // Flash mati: Vignette natural
                     vignette.addColorStop(0, 'rgba(0,0,0,0)');
                     vignette.addColorStop(1, 'rgba(0,0,0,0.6)');
                 }
                 ctx.fillStyle = vignette;
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillRect(padX, padYTop, vw, vh);
 
-                // 4. Color Tinting (Film Tone)
+                // 2. Film Color Tone (Overlay)
                 ctx.globalCompositeOperation = 'overlay';
                 if (recipe === 'kodak') ctx.fillStyle = 'rgba(255, 180, 0, 0.15)';
                 else if (recipe === 'fuji') ctx.fillStyle = 'rgba(0, 180, 120, 0.15)';
                 else if (recipe === 'kodachrome') ctx.fillStyle = 'rgba(255, 60, 50, 0.15)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillRect(padX, padYTop, vw, vh);
                 ctx.globalCompositeOperation = 'source-over';
 
-                // 5. Efek Light Leak (Bocoran Cahaya Merah) - Acak 30% kemungkinan muncul
+                // 3. Light Leaks (30% Kesempatan Muncul)
                 if (Math.random() > 0.7) {
-                    const leak = ctx.createLinearGradient(0, 0, canvas.width * 0.3, 0);
+                    const leak = ctx.createLinearGradient(padX, padYTop, padX + (vw * 0.3), padYTop);
                     leak.addColorStop(0, 'rgba(255, 50, 0, 0.4)');
                     leak.addColorStop(1, 'rgba(255, 50, 0, 0)');
                     ctx.fillStyle = leak;
                     ctx.globalCompositeOperation = 'screen';
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillRect(padX, padYTop, vw, vh);
                     ctx.globalCompositeOperation = 'source-over';
                 }
 
-                // 6. Date Stamp Digital (Sudut Kanan Bawah)
-                ctx.font = `bold ${canvas.height * 0.04}px "Share Tech Mono", monospace, Courier`;
-                ctx.fillStyle = '#ff7b00'; // Oranye digital
+                // 4. Date Stamp Digital di area foto
+                ctx.font = `bold ${vh * 0.04}px "Share Tech Mono", monospace`;
+                ctx.fillStyle = '#ff7b00'; 
                 ctx.textAlign = 'right';
-                // Efek blur/glow pada teks
-                ctx.shadowColor = '#ff5e00';
-                ctx.shadowBlur = 10;
-                ctx.shadowOffsetX = 2;
-                ctx.shadowOffsetY = 2;
-                ctx.fillText(liveDate.innerText, canvas.width - (canvas.width * 0.05), canvas.height - (canvas.height * 0.05));
-                ctx.shadowBlur = 0; // Reset shadow
+                ctx.shadowColor = '#ff5e00'; ctx.shadowBlur = 10; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 2;
+                ctx.fillText(liveDate.innerText, padX + vw - (vw * 0.05), padYTop + vh - (vh * 0.05));
+                ctx.shadowBlur = 0;
             }
+            ctx.restore(); // Lepas kliping
 
-            // Simpan Hasil
-            const dataURL = canvas.toDataURL('image/jpeg', 0.85);
-            
-            // Update Thumbnail
-            galleryThumb.src = dataURL;
-            galleryThumb.style.display = 'block';
+            // Export ke Galeri
+            const dataURL = canvas.toDataURL('image/jpeg', 0.9);
+            const thumb = document.getElementById('gallery-thumb');
+            thumb.src = dataURL; thumb.style.display = 'block';
 
-            // Tambahkan ke Grid Galeri
             const imgEl = document.createElement('img');
             imgEl.src = dataURL;
-            galleryGrid.prepend(imgEl);
+            document.getElementById('gallery-grid').prepend(imgEl);
         });
     </script>
 </body>
