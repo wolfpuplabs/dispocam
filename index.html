@@ -7,7 +7,7 @@
     <style>
         :root {
             --bg-color: #2c3e50;
-            --cam-color: #f1c40f; /* Warna kuning khas kamera sekali pakai Kodak */
+            --cam-color: #f1c40f;
         }
         body {
             font-family: 'Courier New', Courier, monospace;
@@ -27,7 +27,6 @@
             width: 100%;
             max-width: 400px;
             text-align: center;
-            position: relative;
         }
         .viewfinder-container {
             position: relative;
@@ -44,104 +43,41 @@
             display: block;
             object-fit: cover;
         }
-        /* Efek Grain untuk tampilan film analog */
-        .film-grain::after {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.15'/%3E%3C/svg%3E");
-            pointer-events: none;
-            z-index: 2;
-        }
-        /* Filter Resep Film */
-        .filter-kodak-gold {
-            filter: sepia(0.3) contrast(1.15) brightness(1.05) saturate(1.2) hue-rotate(-5deg);
-        }
-        .filter-superia-800 {
-            filter: contrast(1.2) saturate(0.9) hue-rotate(-10deg) brightness(0.95);
-        }
-        .filter-kodachrome {
-            filter: contrast(1.3) saturate(1.4) sepia(0.1) brightness(0.9);
-        }
         
-        .controls {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        select, button {
-            padding: 10px;
-            font-size: 16px;
-            font-family: inherit;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-        }
-        select {
-            background-color: #fff;
-            color: #333;
-            font-weight: bold;
-        }
-        .shutter-btn {
-            background-color: #e74c3c;
-            color: white;
-            font-weight: bold;
-            font-size: 20px;
-            padding: 15px;
-            border: 3px solid #c0392b;
-            border-radius: 50px;
-            transition: transform 0.1s;
-        }
-        .shutter-btn:active {
-            transform: scale(0.95);
-            background-color: #c0392b;
-        }
-        .gallery {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 20px;
-            width: 100%;
-            max-width: 600px;
-        }
-        .gallery img {
-            width: 150px;
-            height: auto;
-            border: 5px solid white;
-            border-radius: 2px;
-            box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
-            background-color: white;
-            position: relative;
-        }
-        canvas {
-            display: none;
-        }
+        /* Filter Viewfinder Real-time */
+        .filter-kodak-gold { filter: contrast(1.1) saturate(1.3) sepia(0.3) hue-rotate(-10deg); }
+        .filter-superia-800 { filter: contrast(1.2) saturate(0.8) sepia(0.2) hue-rotate(15deg); }
+        .filter-kodachrome { filter: contrast(1.4) saturate(1.2) sepia(0.1); }
+        
+        .controls { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
+        select, button { padding: 10px; font-size: 16px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; }
+        .shutter-btn { background-color: #e74c3c; color: white; font-size: 20px; padding: 15px; border: 3px solid #c0392b; border-radius: 50px; }
+        .shutter-btn:active { transform: scale(0.95); background-color: #c0392b; }
+        
+        .gallery { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px; max-width: 600px; }
+        .gallery img { width: 150px; height: auto; border: 5px solid white; box-shadow: 2px 2px 8px rgba(0,0,0,0.3); }
+        canvas { display: none; }
     </style>
 </head>
 <body>
 
     <div class="camera-body">
         <h2 style="color: #333; margin-top: 0;">DISPOSABLE CAM</h2>
-        
-        <div class="viewfinder-container film-grain" id="viewfinder-container">
+        <div class="viewfinder-container" id="viewfinder-container">
             <video id="video" autoplay playsinline></video>
         </div>
-
         <div class="controls">
             <select id="film-recipe">
-                <option value="none">Normal (Tanpa Filter)</option>
+                <option value="none">Normal</option>
                 <option value="filter-kodak-gold">Kodak Gold 200</option>
                 <option value="filter-superia-800">Fujicolor Superia 800</option>
                 <option value="filter-kodachrome">McCurry Kodachrome</option>
             </select>
-            
-            <button class="shutter-btn" id="snap">📸 J E P R E T</button>
+            <button class="shutter-btn" id="snap">📸 S N A P</button>
         </div>
     </div>
 
-    <h3>Galeri Foto</h3>
+    <h3>Photo Gallery</h3>
     <div class="gallery" id="gallery"></div>
     <canvas id="canvas"></canvas>
 
@@ -154,29 +90,20 @@
         const viewfinderContainer = document.getElementById('viewfinder-container');
         const context = canvas.getContext('2d');
 
-        // Meminta akses kamera
+        // Akses kamera
         navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-            .then(stream => {
-                video.srcObject = stream;
-            })
-            .catch(err => {
-                console.error("Gagal mengakses kamera: ", err);
-                alert("Mohon izinkan akses kamera untuk menggunakan aplikasi ini.");
-            });
+            .then(stream => { video.srcObject = stream; })
+            .catch(err => { alert("Mohon izinkan akses kamera."); });
 
-        // Ganti filter di viewfinder secara real-time
+        // Ganti filter viewfinder
         recipeSelect.addEventListener('change', (e) => {
-            // Hapus semua class filter sebelumnya
             video.className = '';
-            // Tambahkan class filter yang baru jika bukan 'none'
-            if (e.target.value !== 'none') {
-                video.classList.add(e.target.value);
-            }
+            if (e.target.value !== 'none') video.classList.add(e.target.value);
         });
 
-        // Mengambil foto
+        // Proses pengambilan foto
         snapButton.addEventListener('click', () => {
-            // Efek flash sederhana
+            // Efek Flash
             viewfinderContainer.style.backgroundColor = 'white';
             video.style.opacity = '0.3';
             setTimeout(() => {
@@ -184,62 +111,67 @@
                 video.style.opacity = '1';
             }, 100);
 
-            // Set ukuran canvas sesuai dengan video
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
-
-            // Terapkan filter CSS ke canvas context agar gambar yang disimpan memiliki filter
             const filterClass = recipeSelect.value;
+
+            // 1. Terapkan Filter Dasar
             if (filterClass === 'filter-kodak-gold') {
-                context.filter = 'sepia(0.3) contrast(1.15) brightness(1.05) saturate(1.2) hue-rotate(-5deg)';
+                context.filter = 'contrast(1.1) saturate(1.3) brightness(1.05) sepia(0.3) hue-rotate(-10deg)';
             } else if (filterClass === 'filter-superia-800') {
-                context.filter = 'contrast(1.2) saturate(0.9) hue-rotate(-10deg) brightness(0.95)';
+                context.filter = 'contrast(1.2) saturate(0.8) brightness(0.95) sepia(0.2) hue-rotate(15deg)';
             } else if (filterClass === 'filter-kodachrome') {
-                context.filter = 'contrast(1.3) saturate(1.4) sepia(0.1) brightness(0.9)';
+                context.filter = 'contrast(1.4) saturate(1.2) brightness(0.95) sepia(0.1)';
             } else {
                 context.filter = 'none';
             }
 
-            // Gambar frame video ke canvas
+            // Gambar video ke canvas
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            context.filter = 'none'; // Reset filter agar tidak menumpuk ke overlay
 
-            // Tambahkan efek grain manual ke canvas dengan menggambar piksel acak
+            // Jika menggunakan filter, tambahkan Tinting, Vignette & Grain
             if (filterClass !== 'none') {
-                addCanvasGrain(context, canvas.width, canvas.height);
+                
+                // 2. Color Tinting (Mensimulasikan White Balance & Color Chrome)
+                context.globalCompositeOperation = 'overlay';
+                if (filterClass === 'filter-kodak-gold') {
+                    context.fillStyle = 'rgba(255, 200, 0, 0.15)'; // Golden warm
+                } else if (filterClass === 'filter-superia-800') {
+                    context.fillStyle = 'rgba(0, 150, 100, 0.15)'; // Cyan/Greenish
+                } else if (filterClass === 'filter-kodachrome') {
+                    context.fillStyle = 'rgba(255, 50, 50, 0.12)'; // Punchy Red
+                }
+                context.fillRect(0, 0, canvas.width, canvas.height);
+                context.globalCompositeOperation = 'source-over';
+
+                // 3. Vignette (Bayangan gelap di sudut ala lensa kamera saku)
+                const gradient = context.createRadialGradient(
+                    canvas.width/2, canvas.height/2, canvas.width * 0.3,
+                    canvas.width/2, canvas.height/2, canvas.width * 0.7
+                );
+                gradient.addColorStop(0, 'rgba(0,0,0,0)');
+                gradient.addColorStop(1, 'rgba(0,0,0,0.5)');
+                context.fillStyle = gradient;
+                context.fillRect(0, 0, canvas.width, canvas.height);
+
+                // 4. Efek Grain Manual
+                const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                const pixels = imageData.data;
+                for (let i = 0; i < pixels.length; i += 4) {
+                    const noise = (Math.random() - 0.5) * 35; // Intensitas noise
+                    pixels[i] = Math.min(255, Math.max(0, pixels[i] + noise));
+                    pixels[i+1] = Math.min(255, Math.max(0, pixels[i+1] + noise));
+                    pixels[i+2] = Math.min(255, Math.max(0, pixels[i+2] + noise));
+                }
+                context.putImageData(imageData, 0, 0);
             }
 
-            // Konversi canvas ke URL gambar
-            const dataURL = canvas.toDataURL('image/jpeg', 0.8);
-            
-            // Buat elemen gambar dan masukkan ke galeri
+            // Tampilkan ke galeri
             const img = document.createElement('img');
-            img.src = dataURL;
-            // Jika ada filter, beri kelas film-grain palsu via CSS untuk galeri
-            if(filterClass !== 'none') {
-                const wrapper = document.createElement('div');
-                wrapper.classList.add('film-grain');
-                wrapper.style.position = 'relative';
-                wrapper.style.display = 'inline-block';
-                wrapper.appendChild(img);
-                gallery.prepend(wrapper);
-            } else {
-                gallery.prepend(img);
-            }
+            img.src = canvas.toDataURL('image/jpeg', 0.85);
+            gallery.prepend(img);
         });
-
-        // Fungsi untuk menambahkan efek bintik (grain) langsung ke dalam data gambar canvas
-        function addCanvasGrain(ctx, w, h) {
-            const imageData = ctx.getImageData(0, 0, w, h);
-            const pixels = imageData.data;
-            for (let i = 0; i < pixels.length; i += 4) {
-                // Buat nilai noise acak
-                const noise = (Math.random() - 0.5) * 30; // Intensitas grain
-                pixels[i] = Math.min(255, Math.max(0, pixels[i] + noise));     // Red
-                pixels[i+1] = Math.min(255, Math.max(0, pixels[i+1] + noise)); // Green
-                pixels[i+2] = Math.min(255, Math.max(0, pixels[i+2] + noise)); // Blue
-            }
-            ctx.putImageData(imageData, 0, 0);
-        }
     </script>
 </body>
 </html>
