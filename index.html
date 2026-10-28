@@ -176,12 +176,13 @@
                         <option value="kodachrome64">KODACHROME 64</option>
                         <option value="portra400">KODAK PORTRA 400</option>
                         <option value="trix400">KODAK TRI-X 400 (B&W)</option>
+                        <option value="ilfordhp5">ILFORD HP5 (B&W)</option>
                         <option value="cinestill800t">CINESTILL 800T</option>
                         <option value="industrial100">FUJICOLOR INDUSTRIAL</option>
                         <option value="velvia">FUJI VELVIA</option>
                         <option value="punchy-chrome">PUNCHY CHROME</option>
                     </optgroup>
-                    <optgroup label="Instagram Filters (AI)">
+                    <optgroup label="Instagram Filters">
                         <option value="ig-90s">90s DREAMS</option>
                         <option value="ig-flash">IG FLASH</option>
                         <option value="ig-filmgrade">FILM GRADE</option>
@@ -200,7 +201,7 @@
         </div>
     </div>
 
-    <!-- Gallery / Library Overlay -->
+    <!-- Gallery Overlay -->
     <div class="full-overlay" id="gallery-overlay">
         <div class="overlay-header">
             <button class="text-btn" id="close-gallery-btn">Cancel</button>
@@ -217,12 +218,11 @@
         </div>
     </div>
 
-    <!-- Single Photo Viewer Overlay -->
+    <!-- Photo Viewer -->
     <div class="full-overlay" id="photo-viewer-overlay">
         <div class="overlay-header">
             <button class="text-btn" id="close-viewer-btn">Back</button>
             <h2 style="font-family: 'Oswald', sans-serif; font-size: 16px; color: #aaa;">PREVIEW</h2>
-            
             <div class="action-icons">
                 <button class="text-btn export-icon" id="single-share-btn">
                     <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
@@ -280,7 +280,6 @@
             viewfinder.classList.toggle('rounded-mode', isRoundOn);
         });
 
-        // FUNGSI BARU: Update Live Preview (Layar Kamera) agar efek terlihat sebelum dijepret!
         function getCssFilterString(recipe) {
             if (recipe === 'kodak-gold') return 'contrast(1.1) saturate(1.3) sepia(0.2)';
             if (recipe === 'superia') return 'contrast(1.2) saturate(0.9) sepia(0.15) hue-rotate(10deg)';
@@ -288,11 +287,10 @@
             if (recipe === 'velvia') return 'contrast(1.3) saturate(1.5) brightness(1.05)';
             if (recipe === 'classic-neg') return 'contrast(1.3) saturate(0.85) sepia(0.1) hue-rotate(5deg)';
             if (recipe === 'kodachrome64') return 'contrast(1.25) saturate(1.2) sepia(0.1)';
-            if (recipe === 'trix400') return 'grayscale(100%) contrast(1.4) brightness(0.95)';
+            if (recipe === 'trix400' || recipe === 'ilfordhp5') return 'grayscale(100%) contrast(1.4) brightness(0.95)';
             if (recipe === 'cinestill800t') return 'contrast(1.25) saturate(1.1) hue-rotate(-10deg) brightness(0.95)';
             if (recipe === 'industrial100') return 'contrast(1.15) saturate(1.2) hue-rotate(-5deg)';
             if (recipe === 'punchy-chrome') return 'contrast(1.2) saturate(1.4) sepia(0.15)';
-            // IG Filters Live Preview (Lebih Ekstrem)
             if (recipe === 'ig-90s') return 'contrast(0.9) brightness(1.15) saturate(1.3) sepia(0.2) hue-rotate(-10deg)';
             if (recipe === 'ig-flash') return 'contrast(1.5) brightness(1.15) saturate(1.1)';
             if (recipe === 'ig-filmgrade') return 'contrast(0.9) brightness(1.1) saturate(0.7) sepia(0.2) hue-rotate(10deg)';
@@ -303,14 +301,12 @@
         recipeSelect.addEventListener('change', (e) => {
             const val = e.target.value;
             document.body.className = '';
-            
-            // Terapkan Filter ke Live Camera Feed!
             video.style.filter = getCssFilterString(val);
             
             if(['kodak-gold', 'portra400'].includes(val)) { document.body.classList.add('theme-kodak'); themeMeta.content = "#F1C40F"; brandTitle.innerText = val === 'portra400' ? "PORTRA 400" : "KODAK GOLD"; }
             else if(['superia', 'velvia', 'industrial100'].includes(val)) { document.body.classList.add('theme-fuji'); themeMeta.content = "#006D44"; brandTitle.innerText = val === 'velvia' ? "VELVIA VIVID" : (val === 'industrial100' ? "FUJI INDUSTRIAL" : "SUPERIA 800"); }
             else if(['classic-neg', 'kodachrome64', 'punchy-chrome', 'cinestill800t', 'golden-neg', 'vintage-chrome'].includes(val)) { document.body.classList.add('theme-chrome'); themeMeta.content = "#D3D3D3"; brandTitle.innerText = val.replace('-', ' ').toUpperCase(); }
-            else if(['trix400'].includes(val)) { document.body.classList.add('theme-bw'); themeMeta.content = "#111111"; brandTitle.innerText = "KODAK TRI-X"; }
+            else if(['trix400', 'ilfordhp5'].includes(val)) { document.body.classList.add('theme-bw'); themeMeta.content = "#111111"; brandTitle.innerText = val === 'trix400' ? "KODAK TRI-X" : "ILFORD HP5"; }
             else if(val.startsWith('ig-')) { document.body.classList.add('theme-ig'); themeMeta.content = "#E1306C"; brandTitle.innerText = val.replace('ig-', '').toUpperCase(); }
             else { document.body.classList.add('theme-default'); themeMeta.content = "#39FF14"; brandTitle.innerText = "DISPO 35MM"; }
         });
@@ -326,7 +322,6 @@
                 if (video.srcObject) video.srcObject.getTracks().forEach(track => track.stop());
                 const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: currentFacingMode, width: { ideal: 1920 } } });
                 video.srcObject = stream;
-                // Aplikasikan filter saat kamera pertama kali load
                 video.style.filter = getCssFilterString(recipeSelect.value);
             } catch (err) { alert("Izinkan akses kamera di browser Anda."); }
         }
@@ -374,7 +369,7 @@
         }
 
         singleShareBtn.addEventListener('click', async () => {
-            if (!navigator.share) { alert("Tahan gambar lalu pilih Save Image"); return; }
+            if (!navigator.share) { alert("Tekan lama pada foto lalu pilih Save Image"); return; }
             try { const file = await dataUrlToFile(currentPhotoDataUrl, `dispo_${Date.now()}.jpg`); await navigator.share({ files: [file] }); } catch (err) {}
         });
 
@@ -391,7 +386,7 @@
                 const filePromises = Array.from(selectedPhotos).map((url, i) => dataUrlToFile(url, `dispo_${Date.now()}_${i}.jpg`));
                 const files = await Promise.all(filePromises);
                 if (navigator.canShare && navigator.canShare({ files })) { await navigator.share({ files: files }); resetSelectionMode(); } 
-                else alert("Tidak dapat membagikan banyak file.");
+                else alert("Tidak dapat membagikan banyak file sekaligus.");
             } catch (err) {}
         });
 
@@ -403,22 +398,42 @@
             ctx.quadraticCurveTo(x, y, x + radius, y); ctx.closePath();
         }
 
-        // ================== SNAP & RENDER (PRO FILTERS) ==================
         snapBtn.addEventListener('click', () => {
             screenFlash.style.transition = 'none'; screenFlash.style.opacity = '1';
             setTimeout(() => { screenFlash.style.transition = 'opacity 0.6s ease-out'; screenFlash.style.opacity = '0'; }, 50);
 
-            const vw = Math.min(1920, video.videoWidth);
-            const vh = vw / (video.videoWidth / video.videoHeight);
             const recipe = recipeSelect.value;
             const recipeText = brandTitle.innerText;
 
-            let padX = 0, padYTop = 0, padYBot = 0;
-            if (isFrameOn) { padX = vw * 0.05; padYTop = padX; padYBot = vw * 0.22; }
+            // --- ALGORITMA CROP 3:4 FIX (AGAR TIDAK KEPOTONG/PENYOK) ---
+            const targetRatio = 3/4;
+            let sWidth = video.videoWidth;
+            let sHeight = video.videoHeight;
+            let sX = 0;
+            let sY = 0;
+            
+            const vRatio = sWidth / sHeight;
+            if (vRatio > targetRatio) {
+                sWidth = sHeight * targetRatio;
+                sX = (video.videoWidth - sWidth) / 2;
+            } else {
+                sHeight = sWidth / targetRatio;
+                sY = (video.videoHeight - sHeight) / 2;
+            }
+
+            // Output resolusi tetap tinggi
+            const vw = 1200; 
+            const vh = vw / targetRatio; 
+
+            let padX = isFrameOn ? vw * 0.05 : 0;
+            let padYTop = padX;
+            let padYBot = isFrameOn ? vw * 0.22 : 0;
             const cornerRadius = isRoundOn ? (vw * 0.05) : 0; 
 
-            canvas.width = vw + (padX * 2); canvas.height = vh + padYTop + padYBot;
+            canvas.width = vw + (padX * 2);
+            canvas.height = vh + padYTop + padYBot;
 
+            // Frame Background
             if (isFrameOn) {
                 ctx.fillStyle = '#f4f4f4';
                 if (isRoundOn) { roundRect(ctx, 0, 0, canvas.width, canvas.height, cornerRadius * 1.5); ctx.fill(); } 
@@ -428,72 +443,64 @@
                 ctx.textAlign = 'center'; ctx.fillText(recipeText, canvas.width / 2, canvas.height - (padYBot / 2.5));
             }
 
+            // --- CLIP GAMBAR ---
             ctx.save(); 
             if (isRoundOn) roundRect(ctx, padX, padYTop, vw, vh, cornerRadius);
             else { ctx.beginPath(); ctx.rect(padX, padYTop, vw, vh); }
             ctx.clip(); 
 
-            if (currentFacingMode === "user") { ctx.translate(canvas.width, 0); ctx.scale(-1, 1); }
+            if (currentFacingMode === "user") {
+                ctx.translate(canvas.width, 0); ctx.scale(-1, 1);
+            }
 
-            // Terapkan Filter Base
+            // GAMBAR VIDEO DENGAN CROP YG BENAR
             ctx.filter = getCssFilterString(recipe);
-            ctx.drawImage(video, padX, padYTop, vw, vh);
+            ctx.drawImage(video, sX, sY, sWidth, sHeight, padX, padYTop, vw, vh);
 
-            // SPECIAL IG EFFECT: 90s Dreams (Glow/Bloom Effect)
+            // IG Glow Effect (Stacking)
             if (recipe === 'ig-90s') {
                 ctx.globalAlpha = 0.35;
-                ctx.filter = 'blur(12px) brightness(1.3) contrast(1.2)';
-                ctx.drawImage(video, padX, padYTop, vw, vh);
+                ctx.filter = 'blur(15px) brightness(1.3)';
+                ctx.drawImage(video, sX, sY, sWidth, sHeight, padX, padYTop, vw, vh);
                 ctx.globalAlpha = 1.0;
                 ctx.filter = 'none';
             }
 
             ctx.restore(); 
             
+            // --- CLIP ULANG TANPA MIRROR UNTUK OVERLAY ---
             ctx.save(); 
             if (isRoundOn) roundRect(ctx, padX, padYTop, vw, vh, cornerRadius);
             else { ctx.beginPath(); ctx.rect(padX, padYTop, vw, vh); }
             ctx.clip(); 
 
-            // Vignette (IG Flash Override)
+            // Vignette
             const cx = padX + vw / 2; const cy = padYTop + vh / 2; const r = Math.max(vw, vh);
             const vignette = ctx.createRadialGradient(cx, cy, r * 0.1, cx, cy, r * 0.85);
             
             if (recipe === 'ig-flash' || isFlashOn) {
-                // Harsh vignette untuk simulasi direct flash kamera saku
-                vignette.addColorStop(0, 'rgba(255,255,255,0.25)'); // Blown out center
+                vignette.addColorStop(0, 'rgba(255,255,255,0.25)'); 
                 vignette.addColorStop(0.4, 'rgba(0,0,0,0)');
-                vignette.addColorStop(1, 'rgba(0,0,0,0.9)'); // Pitch black edges
+                vignette.addColorStop(1, 'rgba(0,0,0,0.9)'); 
             } else {
                 vignette.addColorStop(0, 'rgba(0,0,0,0)'); 
                 vignette.addColorStop(1, 'rgba(0,0,0,0.5)');
             }
             ctx.fillStyle = vignette; ctx.fillRect(padX, padYTop, vw, vh);
 
-            // --- COLOR & SHADOW GRADING ---
-            
-            // 1. Faded Blacks (Film Grade)
+            // Color Grading
             if (recipe === 'ig-filmgrade') {
                 ctx.globalCompositeOperation = 'lighten';
-                ctx.fillStyle = 'rgba(35, 40, 50, 1)'; // Mengubah hitam murni jadi abu-abu kebiruan (matte finish)
+                ctx.fillStyle = 'rgba(35, 40, 50, 1)';
                 ctx.fillRect(padX, padYTop, vw, vh);
                 ctx.globalCompositeOperation = 'source-over';
             }
-
-            // 2. Cinematic Teal & Orange Split Toning
             if (recipe === 'ig-cinematic') {
-                // Teal Shadows
-                ctx.globalCompositeOperation = 'multiply';
-                ctx.fillStyle = 'rgba(0, 60, 100, 0.4)';
-                ctx.fillRect(padX, padYTop, vw, vh);
-                // Orange Highlights
-                ctx.globalCompositeOperation = 'screen';
-                ctx.fillStyle = 'rgba(255, 120, 0, 0.15)';
-                ctx.fillRect(padX, padYTop, vw, vh);
+                ctx.globalCompositeOperation = 'multiply'; ctx.fillStyle = 'rgba(0, 60, 100, 0.4)'; ctx.fillRect(padX, padYTop, vw, vh);
+                ctx.globalCompositeOperation = 'screen'; ctx.fillStyle = 'rgba(255, 120, 0, 0.15)'; ctx.fillRect(padX, padYTop, vw, vh);
                 ctx.globalCompositeOperation = 'source-over';
             }
 
-            // 3. Standar Overlays
             ctx.globalCompositeOperation = 'overlay';
             if (recipe === 'kodak-gold') ctx.fillStyle = 'rgba(255, 180, 0, 0.15)';
             else if (recipe === 'superia') ctx.fillStyle = 'rgba(0, 180, 120, 0.15)';
@@ -504,47 +511,55 @@
             else if (recipe === 'industrial100') ctx.fillStyle = 'rgba(0, 255, 150, 0.05)'; 
             else if (recipe === 'velvia') ctx.fillStyle = 'rgba(255, 50, 150, 0.05)'; 
             else if (recipe === 'punchy-chrome') ctx.fillStyle = 'rgba(255, 160, 100, 0.12)';
-            else if (recipe === 'ig-90s') ctx.fillStyle = 'rgba(255, 100, 180, 0.2)'; // Extra pink push
-            else if (recipe !== 'trix400' && !recipe.startsWith('ig-')) ctx.fillStyle = 'rgba(57, 255, 20, 0.05)'; 
+            else if (recipe === 'ig-90s') ctx.fillStyle = 'rgba(255, 100, 180, 0.2)'; 
+            else if (recipe !== 'trix400' && recipe !== 'ilfordhp5' && !recipe.startsWith('ig-')) ctx.fillStyle = 'rgba(57, 255, 20, 0.05)'; 
             ctx.fillRect(padX, padYTop, vw, vh);
             ctx.globalCompositeOperation = 'source-over';
 
-            // Light Leaks
-            if (recipe !== 'trix400' && Math.random() > 0.7) {
+            if (recipe !== 'trix400' && recipe !== 'ilfordhp5' && Math.random() > 0.7) {
                 const leak = ctx.createLinearGradient(padX, padYTop, padX + (vw * 0.3), padYTop);
                 const leakColor = recipe === 'cinestill800t' ? 'rgba(255, 20, 20, 0.5)' : 'rgba(255, 50, 0, 0.4)';
                 leak.addColorStop(0, leakColor); leak.addColorStop(1, 'rgba(255, 50, 0, 0)');
                 ctx.fillStyle = leak; ctx.globalCompositeOperation = 'screen'; ctx.fillRect(padX, padYTop, vw, vh); ctx.globalCompositeOperation = 'source-over';
             }
 
-            // Analog Grain
-            const heavyGrain = ['trix400', 'cinestill800t', 'ig-filmgrade', 'ig-cinematic'];
+            // --- MANUAL PIXEL MANIPULATION (Menjamin B&W dan Grain berfungsi) ---
+            const heavyGrain = ['trix400', 'ilfordhp5', 'cinestill800t', 'ig-filmgrade', 'ig-cinematic'];
             const lightGrain = ['punchy-chrome', 'portra400', 'superia', 'ig-90s'];
             
-            if (heavyGrain.includes(recipe) || lightGrain.includes(recipe)) {
-                const imgData = ctx.getImageData(padX, padYTop, vw, vh);
-                const noiseIntensity = heavyGrain.includes(recipe) ? 45 : 20;
-                for(let i=0; i < imgData.data.length; i+=4) {
+            const imgData = ctx.getImageData(padX, padYTop, vw, vh);
+            const isBW = (recipe === 'trix400' || recipe === 'ilfordhp5');
+            const noiseIntensity = heavyGrain.includes(recipe) ? 45 : (lightGrain.includes(recipe) ? 20 : 0);
+            
+            for(let i=0; i < imgData.data.length; i+=4) {
+                // Konversi B&W Paksa (Hardcoded) jika browser gagal apply filter CSS
+                if (isBW) {
+                    const avg = (imgData.data[i] + imgData.data[i+1] + imgData.data[i+2]) / 3;
+                    // B&W Contrast Boost
+                    const bwFinal = avg < 128 ? avg * 0.8 : Math.min(255, avg * 1.2); 
+                    imgData.data[i] = bwFinal; imgData.data[i+1] = bwFinal; imgData.data[i+2] = bwFinal;
+                }
+                // Tambah Grain
+                if (noiseIntensity > 0) {
                     let noise = (Math.random() - 0.5) * noiseIntensity;
                     imgData.data[i] = Math.min(255, Math.max(0, imgData.data[i] + noise));
                     imgData.data[i+1] = Math.min(255, Math.max(0, imgData.data[i+1] + noise));
                     imgData.data[i+2] = Math.min(255, Math.max(0, imgData.data[i+2] + noise));
                 }
-                ctx.putImageData(imgData, padX, padYTop);
             }
+            ctx.putImageData(imgData, padX, padYTop);
 
             // Date Stamp
             ctx.font = `bold ${vh * 0.04}px "Share Tech Mono", monospace`;
-            ctx.fillStyle = recipe === 'trix400' ? '#ffffff' : '#ff7b00'; 
+            ctx.fillStyle = isBW ? '#ffffff' : '#ff7b00'; 
             ctx.textAlign = 'right';
-            ctx.shadowColor = recipe === 'trix400' ? '#000000' : '#ff5e00'; 
+            ctx.shadowColor = isBW ? '#000000' : '#ff5e00'; 
             ctx.shadowBlur = 10; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 2;
             const dateOffset = isRoundOn ? (cornerRadius / 2) : 0;
             ctx.fillText(liveDate.innerText, padX + vw - (vw * 0.05) - dateOffset, padYTop + vh - (vh * 0.05) - dateOffset);
             ctx.shadowBlur = 0;
             ctx.restore(); 
 
-            // UI Export
             const dataURL = canvas.toDataURL('image/jpeg', 0.9);
             galleryThumb.src = dataURL; galleryThumb.style.display = 'block';
 
