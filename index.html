@@ -34,6 +34,7 @@
         body.theme-bw { --bg-color: #111; --text-color: #FFF; --btn-bg: #333; --btn-color: #FFF; }
         body.theme-ig { --bg-color: #E1306C; --text-color: #FFF; --btn-bg: #FFF; --btn-color: #E1306C; }
         body.theme-flash { --bg-color: #FFF; --text-color: #111; --btn-bg: #222; --btn-color: #FFF; }
+        body.theme-moody { --bg-color: #2c3e50; --text-color: #FFF; --btn-bg: #FFF; --btn-color: #2c3e50; }
 
         .app-container {
             display: flex; flex-direction: column; height: 100vh; height: 100dvh;
@@ -145,6 +146,7 @@
 <body class="theme-default">
 
     <div class="app-container">
+        <!-- Top Bar -->
         <div class="top-bar">
             <button class="icon-btn" id="flash-btn"><svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg></button>
             <button class="icon-btn" id="frame-btn"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg></button>
@@ -162,9 +164,15 @@
             </div>
         </div>
 
+        <!-- Bottom Controls -->
         <div class="bottom-panel">
             <div class="film-selector-container">
                 <select id="film-recipe">
+                    <optgroup label="Moody Aesthetic">
+                        <option value="moody-amber">MOODY AMBER (GOLD)</option>
+                        <option value="faded-teal">FADED TEAL (MIST)</option>
+                        <option value="dark-cyan">DARK CYAN (OCEAN)</option>
+                    </optgroup>
                     <optgroup label="Extremes">
                         <option value="hard-flash">HARD FLASH (NIGHT)</option>
                     </optgroup>
@@ -182,9 +190,8 @@
                         <option value="cinestill800t">CINESTILL 800T</option>
                         <option value="industrial100">FUJICOLOR INDUSTRIAL</option>
                         <option value="velvia">FUJI VELVIA</option>
-                        <option value="punchy-chrome">PUNCHY CHROME</option>
                     </optgroup>
-                    <optgroup label="Instagram Filters">
+                    <optgroup label="Instagram Filters (AI)">
                         <option value="ig-90s">90s DREAMS</option>
                         <option value="ig-filmgrade">FILM GRADE</option>
                         <option value="ig-cinematic">CINEMATIC</option>
@@ -268,7 +275,7 @@
         
         let currentFacingMode = "environment";
         let isFlashOn = false;
-        let isFrameOn = true; // Auto On for better effect representation
+        let isFrameOn = true; 
         let isRoundOn = false;
         let currentPhotoDataUrl = "";
         
@@ -277,7 +284,6 @@
 
         document.querySelectorAll('button').forEach(btn => btn.addEventListener('contextmenu', e => e.preventDefault()));
         
-        // Initial setup for UI
         frameBtn.classList.toggle('active-state', isFrameOn);
         viewfinder.classList.toggle('frame-mode', isFrameOn);
 
@@ -287,8 +293,13 @@
             viewfinder.classList.toggle('rounded-mode', isRoundOn);
         });
 
+        // UPDATE CSS FILTER LIVE PREVIEW
         function getCssFilterString(recipe) {
-            if (recipe === 'hard-flash') return 'contrast(1.5) saturate(1.2) brightness(1.15) sepia(0.15)'; // Resep baru Ekstrem
+            if (recipe === 'moody-amber') return 'contrast(1.3) brightness(0.9) saturate(0.85) sepia(0.3)';
+            if (recipe === 'faded-teal') return 'contrast(0.85) brightness(1.1) saturate(0.8) sepia(0.1)';
+            if (recipe === 'dark-cyan') return 'contrast(1.4) brightness(0.85) saturate(0.9) sepia(0.15) hue-rotate(-10deg)';
+            
+            if (recipe === 'hard-flash') return 'contrast(1.5) saturate(1.2) brightness(1.15) sepia(0.15)';
             if (recipe === 'kodak-gold') return 'contrast(1.1) saturate(1.3) sepia(0.2)';
             if (recipe === 'superia') return 'contrast(1.2) saturate(0.9) sepia(0.15) hue-rotate(10deg)';
             if (recipe === 'portra400') return 'contrast(0.95) saturate(1.1) sepia(0.1) brightness(1.05)';
@@ -298,7 +309,6 @@
             if (recipe === 'trix400' || recipe === 'ilfordhp5') return 'grayscale(100%) contrast(1.4) brightness(0.95)';
             if (recipe === 'cinestill800t') return 'contrast(1.25) saturate(1.1) hue-rotate(-10deg) brightness(0.95)';
             if (recipe === 'industrial100') return 'contrast(1.15) saturate(1.2) hue-rotate(-5deg)';
-            if (recipe === 'punchy-chrome') return 'contrast(1.2) saturate(1.4) sepia(0.15)';
             if (recipe === 'ig-90s') return 'contrast(0.9) brightness(1.15) saturate(1.3) sepia(0.2) hue-rotate(-10deg)';
             if (recipe === 'ig-filmgrade') return 'contrast(0.9) brightness(1.1) saturate(0.7) sepia(0.2) hue-rotate(10deg)';
             if (recipe === 'ig-cinematic') return 'contrast(1.3) saturate(1.2) sepia(0.3) hue-rotate(-15deg)';
@@ -310,10 +320,11 @@
             document.body.className = '';
             video.style.filter = getCssFilterString(val);
             
-            if(val === 'hard-flash') { document.body.classList.add('theme-flash'); themeMeta.content = "#FFFFFF"; brandTitle.innerText = "DIRECT FLASH"; }
+            if(['moody-amber', 'faded-teal', 'dark-cyan'].includes(val)) { document.body.classList.add('theme-moody'); themeMeta.content = "#2c3e50"; brandTitle.innerText = val.replace('-', ' ').toUpperCase(); }
+            else if(val === 'hard-flash') { document.body.classList.add('theme-flash'); themeMeta.content = "#FFFFFF"; brandTitle.innerText = "DIRECT FLASH"; }
             else if(['kodak-gold', 'portra400'].includes(val)) { document.body.classList.add('theme-kodak'); themeMeta.content = "#F1C40F"; brandTitle.innerText = val === 'portra400' ? "PORTRA 400" : "KODAK GOLD"; }
             else if(['superia', 'velvia', 'industrial100'].includes(val)) { document.body.classList.add('theme-fuji'); themeMeta.content = "#006D44"; brandTitle.innerText = val === 'velvia' ? "VELVIA VIVID" : (val === 'industrial100' ? "FUJI INDUSTRIAL" : "SUPERIA 800"); }
-            else if(['classic-neg', 'kodachrome64', 'punchy-chrome', 'cinestill800t', 'golden-neg', 'vintage-chrome'].includes(val)) { document.body.classList.add('theme-chrome'); themeMeta.content = "#D3D3D3"; brandTitle.innerText = val.replace('-', ' ').toUpperCase(); }
+            else if(['classic-neg', 'kodachrome64', 'cinestill800t'].includes(val)) { document.body.classList.add('theme-chrome'); themeMeta.content = "#D3D3D3"; brandTitle.innerText = val.replace('-', ' ').toUpperCase(); }
             else if(['trix400', 'ilfordhp5'].includes(val)) { document.body.classList.add('theme-bw'); themeMeta.content = "#111111"; brandTitle.innerText = val === 'trix400' ? "KODAK TRI-X" : "ILFORD HP5"; }
             else if(val.startsWith('ig-')) { document.body.classList.add('theme-ig'); themeMeta.content = "#E1306C"; brandTitle.innerText = val.replace('ig-', '').toUpperCase(); }
             else { document.body.classList.add('theme-default'); themeMeta.content = "#39FF14"; brandTitle.innerText = "DISPO 35MM"; }
@@ -431,20 +442,18 @@
             canvas.width = vw + (padX * 2);
             canvas.height = vh + padYTop + padYBot;
 
-            // --- RENDER BINGKAI KERTAS (TEXTURED FRAME) ---
+            // --- RENDER BINGKAI KERTAS ---
             if (isFrameOn) {
-                // Base color kertas sedikit warm
-                ctx.fillStyle = '#f7f6f2';
+                ctx.fillStyle = '#f7f6f2'; // Warm white paper
                 if (isRoundOn) { roundRect(ctx, 0, 0, canvas.width, canvas.height, cornerRadius * 1.5); ctx.fill(); } 
                 else ctx.fillRect(0, 0, canvas.width, canvas.height);
                 
-                // Tambah noise ringan di frame agar terlihat seperti kertas kotor
+                // Texture noise untuk kertas bingkai
                 ctx.fillStyle = 'rgba(0,0,0,0.03)';
                 for(let i=0; i<3000; i++) {
                     ctx.fillRect(Math.random()*canvas.width, Math.random()*canvas.height, 2, 2);
                 }
                 
-                // Text di bingkai
                 ctx.fillStyle = '#888'; ctx.font = `bold ${canvas.width * 0.035}px 'Oswald', sans-serif`;
                 ctx.textAlign = 'center'; ctx.fillText(recipeText, canvas.width / 2, canvas.height - (padYBot / 2.5));
             }
@@ -459,50 +468,70 @@
             ctx.filter = getCssFilterString(recipe);
             ctx.drawImage(video, sX, sY, sWidth, sHeight, padX, padYTop, vw, vh);
 
-            // IG 90s Dreams Bloom
-            if (recipe === 'ig-90s') {
-                ctx.globalAlpha = 0.35; ctx.filter = 'blur(15px) brightness(1.3)';
+            // IG 90s Dreams / Faded Teal Bloom (Mist Effect)
+            if (recipe === 'ig-90s' || recipe === 'faded-teal') {
+                ctx.globalAlpha = 0.35; 
+                ctx.filter = recipe === 'faded-teal' ? 'blur(10px) brightness(1.2)' : 'blur(15px) brightness(1.3)';
                 ctx.drawImage(video, sX, sY, sWidth, sHeight, padX, padYTop, vw, vh);
                 ctx.globalAlpha = 1.0; ctx.filter = 'none';
             }
 
             ctx.restore(); 
             
-            // --- MENGGAMBAR OVERLAYS PADA FOTO ---
+            // --- OVERLAYS PADA FOTO ---
             ctx.save(); 
             if (isRoundOn) roundRect(ctx, padX, padYTop, vw, vh, cornerRadius);
             else { ctx.beginPath(); ctx.rect(padX, padYTop, vw, vh); }
             ctx.clip(); 
 
-            // Vignette Khusus Hard Flash / IG Flash
+            // VIGNETTE KHUSUS
             const cx = padX + vw / 2; const cy = padYTop + vh / 2; const r = Math.max(vw, vh);
             const vignette = ctx.createRadialGradient(cx, cy, r * 0.1, cx, cy, r * 0.85);
             
             if (recipe === 'hard-flash' || recipe === 'ig-flash' || isFlashOn) {
-                // Vignette sangat tajam, meniru direct flash di malam hari
-                vignette.addColorStop(0, 'rgba(255,255,255,0.15)'); // Center slightly bright
+                vignette.addColorStop(0, 'rgba(255,255,255,0.15)'); 
                 vignette.addColorStop(0.3, 'rgba(0,0,0,0)');
-                vignette.addColorStop(0.6, 'rgba(0,0,0,0.7)'); // Harsh drop
-                vignette.addColorStop(1, 'rgba(0,0,0,0.95)'); // Pitch black edges
+                vignette.addColorStop(0.6, 'rgba(0,0,0,0.7)'); 
+                vignette.addColorStop(1, 'rgba(0,0,0,0.95)'); 
+            } else if (recipe === 'dark-cyan' || recipe === 'moody-amber') {
+                vignette.addColorStop(0, 'rgba(0,0,0,0)'); 
+                vignette.addColorStop(1, 'rgba(0,0,0,0.7)'); // Stronger moody vignette
             } else {
                 vignette.addColorStop(0, 'rgba(0,0,0,0)'); 
                 vignette.addColorStop(1, 'rgba(0,0,0,0.5)');
             }
             ctx.fillStyle = vignette; ctx.fillRect(padX, padYTop, vw, vh);
 
-            // Color Grading Modes
-            if (recipe === 'ig-filmgrade') {
-                ctx.globalCompositeOperation = 'lighten'; ctx.fillStyle = 'rgba(35, 40, 50, 1)';
+            // COLOR GRADING MODES (Faded & Cinematic)
+            if (recipe === 'ig-filmgrade' || recipe === 'faded-teal') {
+                ctx.globalCompositeOperation = 'lighten'; 
+                // Hitam diangkat menjadi abu-abu hijau/biru (Faded/Matte Shadows)
+                ctx.fillStyle = recipe === 'faded-teal' ? 'rgba(25, 45, 45, 1)' : 'rgba(35, 40, 50, 1)';
                 ctx.fillRect(padX, padYTop, vw, vh); ctx.globalCompositeOperation = 'source-over';
             }
-            if (recipe === 'ig-cinematic') {
-                ctx.globalCompositeOperation = 'multiply'; ctx.fillStyle = 'rgba(0, 60, 100, 0.4)'; ctx.fillRect(padX, padYTop, vw, vh);
-                ctx.globalCompositeOperation = 'screen'; ctx.fillStyle = 'rgba(255, 120, 0, 0.15)'; ctx.fillRect(padX, padYTop, vw, vh);
+            
+            if (recipe === 'ig-cinematic' || recipe === 'dark-cyan') {
+                ctx.globalCompositeOperation = 'multiply'; 
+                ctx.fillStyle = recipe === 'dark-cyan' ? 'rgba(0, 30, 50, 0.4)' : 'rgba(0, 60, 100, 0.4)'; 
+                ctx.fillRect(padX, padYTop, vw, vh);
+                
+                ctx.globalCompositeOperation = 'screen'; 
+                ctx.fillStyle = recipe === 'dark-cyan' ? 'rgba(0, 100, 120, 0.2)' : 'rgba(255, 120, 0, 0.15)'; 
+                ctx.fillRect(padX, padYTop, vw, vh);
                 ctx.globalCompositeOperation = 'source-over';
             }
 
+            if (recipe === 'moody-amber') {
+                // Crushed dark warm shadows
+                ctx.globalCompositeOperation = 'multiply'; ctx.fillStyle = 'rgba(30, 15, 0, 0.3)'; ctx.fillRect(padX, padYTop, vw, vh);
+                ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // STANDARD OVERLAYS
             ctx.globalCompositeOperation = 'overlay';
-            if (recipe === 'hard-flash') ctx.fillStyle = 'rgba(255, 150, 50, 0.12)'; // Warm punch
+            if (recipe === 'hard-flash') ctx.fillStyle = 'rgba(255, 150, 50, 0.12)'; 
+            else if (recipe === 'moody-amber') ctx.fillStyle = 'rgba(255, 160, 50, 0.2)'; // Amber highlight
+            else if (recipe === 'faded-teal') ctx.fillStyle = 'rgba(150, 200, 150, 0.1)'; 
             else if (recipe === 'kodak-gold') ctx.fillStyle = 'rgba(255, 180, 0, 0.15)';
             else if (recipe === 'superia') ctx.fillStyle = 'rgba(0, 180, 120, 0.15)';
             else if (recipe === 'classic-neg') ctx.fillStyle = 'rgba(0, 150, 50, 0.1)';
@@ -511,12 +540,13 @@
             else if (recipe === 'cinestill800t') ctx.fillStyle = 'rgba(0, 100, 200, 0.15)'; 
             else if (recipe === 'industrial100') ctx.fillStyle = 'rgba(0, 255, 150, 0.05)'; 
             else if (recipe === 'velvia') ctx.fillStyle = 'rgba(255, 50, 150, 0.05)'; 
-            else if (recipe === 'punchy-chrome') ctx.fillStyle = 'rgba(255, 160, 100, 0.12)';
             else if (recipe === 'ig-90s') ctx.fillStyle = 'rgba(255, 100, 180, 0.2)'; 
             else if (recipe !== 'trix400' && recipe !== 'ilfordhp5' && !recipe.startsWith('ig-')) ctx.fillStyle = 'rgba(57, 255, 20, 0.05)'; 
+            
             ctx.fillRect(padX, padYTop, vw, vh);
             ctx.globalCompositeOperation = 'source-over';
 
+            // Light Leaks
             if (recipe !== 'trix400' && recipe !== 'ilfordhp5' && Math.random() > 0.7) {
                 const leak = ctx.createLinearGradient(padX, padYTop, padX + (vw * 0.3), padYTop);
                 const leakColor = recipe === 'cinestill800t' ? 'rgba(255, 20, 20, 0.5)' : 'rgba(255, 50, 0, 0.4)';
@@ -524,8 +554,10 @@
                 ctx.fillStyle = leak; ctx.globalCompositeOperation = 'screen'; ctx.fillRect(padX, padYTop, vw, vh); ctx.globalCompositeOperation = 'source-over';
             }
 
-            const heavyGrain = ['hard-flash', 'trix400', 'ilfordhp5', 'cinestill800t', 'ig-filmgrade', 'ig-cinematic'];
-            const lightGrain = ['punchy-chrome', 'portra400', 'superia', 'ig-90s'];
+            // ANALOG GRAIN
+            const heavyGrain = ['hard-flash', 'moody-amber', 'dark-cyan', 'trix400', 'ilfordhp5', 'cinestill800t', 'ig-filmgrade', 'ig-cinematic'];
+            const lightGrain = ['faded-teal', 'portra400', 'superia', 'ig-90s'];
+            
             const imgData = ctx.getImageData(padX, padYTop, vw, vh);
             const isBW = (recipe === 'trix400' || recipe === 'ilfordhp5');
             const noiseIntensity = heavyGrain.includes(recipe) ? 45 : (lightGrain.includes(recipe) ? 20 : 0);
@@ -545,10 +577,8 @@
             }
             ctx.putImageData(imgData, padX, padYTop);
 
-            // Inner Shadow/Stroke untuk bingkai agar terlihat menyatu
             if (isFrameOn) {
-                ctx.strokeStyle = 'rgba(0,0,0,0.15)';
-                ctx.lineWidth = 4;
+                ctx.strokeStyle = 'rgba(0,0,0,0.15)'; ctx.lineWidth = 4;
                 if (isRoundOn) { roundRect(ctx, padX, padYTop, vw, vh, cornerRadius); ctx.stroke(); } 
                 else ctx.strokeRect(padX, padYTop, vw, vh);
             }
