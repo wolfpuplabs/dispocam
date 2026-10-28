@@ -3,106 +3,245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Disposable Pro Cam + Frame</title>
+    <title>Disposable Pro Cam</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Oswald:wght@500;700&display=swap');
 
-        :root { --bg: #111; --accent: #ffcc00; --ui-bg: rgba(20, 20, 20, 0.85); }
-        * { box-sizing: border-box; }
-        body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: var(--bg); color: white;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            overflow-x: hidden;
+        :root {
+            /* Default Theme (Kodak Gold) */
+            --bg-color: #F1C40F; /* Kuning Kodak */
+            --text-color: #111;
+            --accent-color: #E74C3C; /* Merah */
+            --ui-panel: #222;
+            --btn-bg: #111;
+            --btn-color: #F1C40F;
         }
 
-        .app-container { display: flex; flex-direction: column; height: 100vh; height: 100dvh; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body, html {
+            width: 100%; height: 100%;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
 
-        /* Top Bar */
+        /* --- TEMA DINAMIS --- */
+        body.theme-fuji {
+            --bg-color: #006D44; /* Hijau Fuji */
+            --text-color: #FFF;
+            --accent-color: #E74C3C;
+            --btn-bg: #FFF;
+            --btn-color: #006D44;
+        }
+        body.theme-kodachrome {
+            --bg-color: #C41230; /* Merah Kodachrome */
+            --text-color: #F1C40F;
+            --accent-color: #111;
+            --btn-bg: #F1C40F;
+            --btn-color: #C41230;
+        }
+        body.theme-carl {
+            --bg-color: #D3D3D3; /* Silver Klasik */
+            --text-color: #222;
+            --accent-color: #444;
+            --btn-bg: #222;
+            --btn-color: #FFF;
+        }
+        body.theme-normal {
+            --bg-color: #1A1A1A;
+            --text-color: #EEE;
+            --accent-color: #777;
+            --btn-bg: #444;
+            --btn-color: #FFF;
+        }
+
+        .app-container {
+            display: flex; flex-direction: column; height: 100vh; height: 100dvh;
+            /* Tekstur plastik kasar (Noise overlay) */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+        }
+
+        /* --- TOP BAR (ICONS) --- */
         .top-bar {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 15px; background: var(--ui-bg); backdrop-filter: blur(10px); z-index: 10;
+            padding: 15px 20px; z-index: 10;
         }
-        .top-bar-center { font-size: 14px; font-weight: bold; letter-spacing: 2px; }
+        
         .icon-btn {
-            background: none; border: none; color: white; font-size: 22px; cursor: pointer; transition: 0.2s;
+            background: var(--btn-bg); border: none; border-radius: 50%;
+            width: 40px; height: 40px; display: flex; justify-content: center; align-items: center;
+            cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
-        .icon-btn:active { transform: scale(0.8); }
-        .active-icon { color: var(--accent); text-shadow: 0 0 10px rgba(241, 196, 15, 0.6); }
+        .icon-btn svg { width: 20px; height: 20px; fill: var(--btn-color); transition: fill 0.3s; }
+        .icon-btn:active { transform: scale(0.9); }
+        .icon-btn.active-state { background: var(--accent-color); }
+        .icon-btn.active-state svg { fill: #FFF; }
 
-        /* Viewfinder */
-        .viewfinder { position: relative; flex: 1; width: 100%; background: #000; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .brand-title {
+            font-family: 'Oswald', sans-serif; font-size: 1.5rem; font-weight: 700;
+            letter-spacing: 2px; text-transform: uppercase;
+        }
+
+        /* --- VIEWFINDER --- */
+        .viewfinder-wrapper {
+            flex: 1; display: flex; justify-content: center; align-items: center;
+            padding: 10px 20px;
+        }
+        .viewfinder {
+            position: relative; width: 100%; max-width: 500px; aspect-ratio: 3/4;
+            background: #000; border-radius: 12px; overflow: hidden;
+            border: 8px solid var(--ui-panel);
+            box-shadow: inset 0 0 20px rgba(0,0,0,1), 0 10px 20px rgba(0,0,0,0.5);
+        }
         video { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
         
-        /* Frame Preview in Live View */
-        .viewfinder.frame-mode video { width: 85%; height: 80%; object-fit: cover; border: 15px solid #f4f4f4; border-bottom-width: 60px; border-radius: 4px; background: #f4f4f4; box-shadow: 0 0 20px rgba(0,0,0,0.8); }
+        /* Frame Mode CSS */
+        .viewfinder.frame-mode video {
+            width: 85%; height: 80%; margin: 5% auto 0; display: block;
+            border: 2px solid #ddd; background: #f4f4f4; object-fit: cover;
+        }
+        .viewfinder.frame-mode::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: #f4f4f4; z-index: -1;
+        }
+
+        /* Viewfinder Overlays */
+        .crosshair {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 40px; height: 40px; pointer-events: none; opacity: 0.5;
+        }
+        .crosshair::before, .crosshair::after {
+            content: ''; position: absolute; background: rgba(255,255,255,0.8);
+        }
+        .crosshair::before { top: 19px; left: 0; width: 40px; height: 2px; }
+        .crosshair::after { top: 0; left: 19px; width: 2px; height: 40px; }
 
         .live-date {
-            position: absolute; bottom: 20px; right: 25px; font-family: 'Share Tech Mono', monospace;
-            color: #ff5e00; font-size: 1.2rem; text-shadow: 1px 1px 4px rgba(255, 94, 0, 0.8); z-index: 2;
+            position: absolute; bottom: 15px; right: 20px; font-family: 'Share Tech Mono', monospace;
+            color: #ff5e00; font-size: 1.1rem; text-shadow: 1px 1px 4px rgba(255, 94, 0, 0.8); z-index: 2;
         }
-        .viewfinder.frame-mode .live-date { bottom: 85px; right: 12%; }
+        .viewfinder.frame-mode .live-date { bottom: 60px; right: 15%; }
         .screen-flash { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: white; opacity: 0; pointer-events: none; z-index: 10; }
 
-        /* Bottom Controls */
-        .bottom-bar {
-            background: var(--ui-bg); padding: 20px 20px 40px; display: flex; flex-direction: column; align-items: center; gap: 20px; border-top: 1px solid #333;
+        /* --- BOTTOM CONTROLS (FILM ROLL & SHUTTER) --- */
+        .bottom-panel {
+            background: var(--ui-panel); padding: 25px 20px 40px;
+            display: flex; flex-direction: column; align-items: center; gap: 20px;
+            border-top: 4px solid rgba(255,255,255,0.1);
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.5);
+        }
+
+        /* Film Selector Styling ala Rol Film */
+        .film-selector-container {
+            display: flex; align-items: center; background: var(--bg-color);
+            border-radius: 30px; padding: 5px 15px; width: 250px;
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.4); border: 2px solid #000;
+        }
+        .film-exp {
+            font-family: 'Oswald', sans-serif; font-weight: bold; color: var(--text-color);
+            margin-right: 10px; font-size: 14px;
         }
         select {
-            appearance: none; background: #222; color: var(--accent); border: 1px solid var(--accent); padding: 10px 20px; border-radius: 20px; font-size: 14px; font-weight: bold; text-align: center; outline: none; cursor: pointer; width: 230px;
+            appearance: none; background: transparent; color: var(--text-color);
+            border: none; font-family: 'Oswald', sans-serif; font-size: 16px;
+            font-weight: bold; text-align: left; outline: none; cursor: pointer; flex: 1;
+            text-transform: uppercase;
         }
+        select option { background: #222; color: #fff; }
+
         .shutter-container { display: flex; justify-content: center; align-items: center; width: 100%; position: relative; }
-        .shutter-btn { width: 75px; height: 75px; border-radius: 50%; background: white; border: 4px solid #ccc; outline: 4px solid white; outline-offset: 4px; cursor: pointer; transition: all 0.1s ease; }
-        .shutter-btn:active { background: #ddd; transform: scale(0.95); }
-        .gallery-btn { position: absolute; right: 0; width: 50px; height: 50px; border-radius: 10px; overflow: hidden; border: 2px solid white; background: #333; cursor: pointer; }
+        
+        /* Tactile Shutter Button */
+        .shutter-btn {
+            width: 80px; height: 80px; border-radius: 50%;
+            background: radial-gradient(circle, #eee 40%, #ccc 100%);
+            border: none; box-shadow: 0 6px 0 #888, 0 10px 15px rgba(0,0,0,0.5);
+            cursor: pointer; transition: all 0.1s;
+        }
+        .shutter-btn:active {
+            transform: translateY(6px); box-shadow: 0 0 0 #888, 0 4px 5px rgba(0,0,0,0.5);
+            background: radial-gradient(circle, #ddd 40%, #aaa 100%);
+        }
+
+        .gallery-btn {
+            position: absolute; right: 0; width: 55px; height: 55px; border-radius: 8px;
+            overflow: hidden; border: 3px solid #444; background: #111; cursor: pointer;
+        }
         .gallery-btn img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* Gallery Overlay */
+        /* --- OVERLAYS (Gallery & Info) --- */
         .full-overlay {
-            position: fixed; top: 100%; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 100; transition: top 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); display: flex; flex-direction: column;
+            position: fixed; top: 100%; left: 0; width: 100%; height: 100%;
+            background: #111; color: white; z-index: 100;
+            transition: top 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); display: flex; flex-direction: column;
         }
         .full-overlay.open { top: 0; }
-        .overlay-header { padding: 20px; display: flex; justify-content: space-between; border-bottom: 1px solid #333; align-items: center; }
+        .overlay-header { padding: 20px; display: flex; justify-content: space-between; border-bottom: 1px solid #333; align-items: center; background: #222;}
+        .close-btn { background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
+        
         .gallery-grid { padding: 10px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; overflow-y: auto; flex: 1; }
         .gallery-grid img { width: 100%; border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-
-        /* Info Content */
-        .info-content { padding: 20px; overflow-y: auto; line-height: 1.6; color: #ddd; }
-        .info-content h3 { color: var(--accent); margin-bottom: 5px; }
-        .info-content ul { padding-left: 20px; }
-        .info-content li { margin-bottom: 10px; }
+        .info-content { padding: 20px; overflow-y: auto; line-height: 1.6; }
 
         canvas { display: none; }
     </style>
 </head>
-<body>
+<body class="theme-kodak"> <!-- Default Theme -->
 
     <div class="app-container">
-        <!-- Top Bar -->
+        <!-- Top Bar with SVG Icons -->
         <div class="top-bar">
-            <button class="icon-btn" id="flash-btn">⚡</button>
-            <button class="icon-btn" id="frame-btn">🖼️</button>
-            <span class="top-bar-center">FILM CAM</span>
-            <button class="icon-btn" id="flip-btn">🔄</button>
-            <button class="icon-btn" id="info-btn">ℹ️</button>
+            <!-- Flash Icon -->
+            <button class="icon-btn" id="flash-btn">
+                <svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+            </button>
+            
+            <!-- Frame Icon -->
+            <button class="icon-btn" id="frame-btn">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg>
+            </button>
+            
+            <span class="brand-title" id="brand-title">KODAK 200</span>
+            
+            <!-- Flip Icon -->
+            <button class="icon-btn" id="flip-btn">
+                <svg viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
+            </button>
+            
+            <!-- Info Icon -->
+            <button class="icon-btn" id="info-btn">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+            </button>
         </div>
 
         <!-- Viewfinder -->
-        <div class="viewfinder" id="viewfinder">
-            <video id="video" autoplay playsinline></video>
-            <div class="live-date" id="live-date"></div>
-            <div class="screen-flash" id="screen-flash"></div>
+        <div class="viewfinder-wrapper">
+            <div class="viewfinder" id="viewfinder">
+                <div class="crosshair"></div>
+                <video id="video" autoplay playsinline></video>
+                <div class="live-date" id="live-date"></div>
+                <div class="screen-flash" id="screen-flash"></div>
+            </div>
         </div>
 
         <!-- Bottom Controls -->
-        <div class="bottom-bar">
-            <select id="film-recipe">
-                <option value="carlcruz">CARL CRUZ CHROME</option>
-                <option value="kodak">KODAK GOLD 200</option>
-                <option value="fuji">FUJI SUPERIA 800</option>
-                <option value="kodachrome">KODACHROME</option>
-                <option value="none">NORMAL</option>
-            </select>
+        <div class="bottom-panel">
+            <div class="film-selector-container">
+                <div class="film-exp">36 EXP</div>
+                <select id="film-recipe">
+                    <option value="kodak">GOLD 200</option>
+                    <option value="fuji">SUPERIA 800</option>
+                    <option value="kodachrome">KODACHROME</option>
+                    <option value="carlcruz">CARL CHROME</option>
+                    <option value="none">NORMAL</option>
+                </select>
+                <!-- Dropdown Icon -->
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--text-color)"><path d="M7 10l5 5 5-5z"/></svg>
+            </div>
             
             <div class="shutter-container">
                 <button class="shutter-btn" id="snap"></button>
@@ -116,8 +255,8 @@
     <!-- Gallery Overlay -->
     <div class="full-overlay" id="gallery-overlay">
         <div class="overlay-header">
-            <h2>Camera Roll</h2>
-            <button class="icon-btn" id="close-gallery-btn">✖</button>
+            <h2 style="font-family: 'Oswald', sans-serif;">CAMERA ROLL</h2>
+            <button class="close-btn" id="close-gallery-btn">✖</button>
         </div>
         <div class="gallery-grid" id="gallery-grid"></div>
     </div>
@@ -125,23 +264,16 @@
     <!-- Info Overlay -->
     <div class="full-overlay" id="info-overlay">
         <div class="overlay-header">
-            <h2>Film Info</h2>
-            <button class="icon-btn" id="close-info-btn">✖</button>
+            <h2 style="font-family: 'Oswald', sans-serif;">FILM INFO</h2>
+            <button class="close-btn" id="close-info-btn">✖</button>
         </div>
         <div class="info-content">
-            <h3>🎞️ Resep Film</h3>
+            <h3>Resep Film Tersedia:</h3><br>
             <ul>
-                <li><strong>Carl Cruz Chrome:</strong> Berbasis Classic Chrome dengan saturasi tinggi (Color +4) dan bayangan halus, memberikan warna biru dan hangat yang punchy.</li>
-                <li><strong>Kodak Gold 200:</strong> Tone kuning hangat, kontras medium, dan bayangan vintage.</li>
-                <li><strong>Fujicolor Superia 800:</strong> Karakter warna kehijauan (cyan/green tint) dengan kontras yang lebih tajam ala film Fuji saku.</li>
-                <li><strong>McCurry Kodachrome:</strong> Kontras sangat tinggi dengan warna merah yang *punchy* dan mencolok.</li>
-            </ul>
-
-            <h3>✨ Fitur Tambahan</h3>
-            <ul>
-                <li><strong>Flash (⚡):</strong> Menambahkan efek *vignette* ekstrem (tengah sangat terang, ujung gelap gulita).</li>
-                <li><strong>Frame (🖼️):</strong> Menambahkan bingkai kertas putih ala foto instan/Polaroid dengan stempel nama film di bawahnya.</li>
-                <li><strong>Light Leaks:</strong> Ada kemungkinan acak 30% munculnya gradasi cahaya kemerahan di pinggir foto.</li>
+                <li><strong>Kodak Gold 200:</strong> Tone kuning hangat, kontras medium.</li>
+                <li><strong>Fujicolor Superia 800:</strong> Tone cyan/greenish dengan kontras tajam.</li>
+                <li><strong>Kodachrome:</strong> Kontras sangat tinggi, merah pekat.</li>
+                <li><strong>Carl Cruz Chrome:</strong> Biru punchy, bayangan halus.</li>
             </ul>
         </div>
     </div>
@@ -156,6 +288,7 @@
         const viewfinder = document.getElementById('viewfinder');
         const screenFlash = document.getElementById('screen-flash');
         const liveDate = document.getElementById('live-date');
+        const brandTitle = document.getElementById('brand-title');
         
         // Buttons
         const flashBtn = document.getElementById('flash-btn');
@@ -168,6 +301,18 @@
         let isFlashOn = false;
         let isFrameOn = false;
 
+        // Dynamic Theme Switcher
+        recipeSelect.addEventListener('change', (e) => {
+            const val = e.target.value;
+            document.body.className = ''; // Reset
+            
+            if(val === 'kodak') { document.body.classList.add('theme-kodak'); brandTitle.innerText = "KODAK 200"; }
+            else if(val === 'fuji') { document.body.classList.add('theme-fuji'); brandTitle.innerText = "FUJICOLOR"; }
+            else if(val === 'kodachrome') { document.body.classList.add('theme-kodachrome'); brandTitle.innerText = "KODACHROME"; }
+            else if(val === 'carlcruz') { document.body.classList.add('theme-carl'); brandTitle.innerText = "CARL CHROME"; }
+            else { document.body.classList.add('theme-normal'); brandTitle.innerText = "DIGITAL"; }
+        });
+
         function updateDate() {
             const d = new Date();
             liveDate.innerText = `'${String(d.getFullYear()).slice(2)} ${String(d.getMonth() + 1).padStart(2, '0')} ${String(d.getDate()).padStart(2, '0')}`;
@@ -179,18 +324,19 @@
                 if (video.srcObject) video.srcObject.getTracks().forEach(track => track.stop());
                 const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: currentFacingMode, width: { ideal: 1920 } } });
                 video.srcObject = stream;
-            } catch (err) { alert("Izinkan kamera untuk menggunakan aplikasi."); }
+            } catch (err) { alert("Izinkan akses kamera di browser Anda."); }
         }
         initCamera();
 
+        // Toggle Buttons logic
         flashBtn.addEventListener('click', () => {
             isFlashOn = !isFlashOn;
-            flashBtn.classList.toggle('active-icon', isFlashOn);
+            flashBtn.classList.toggle('active-state', isFlashOn);
         });
 
         frameBtn.addEventListener('click', () => {
             isFrameOn = !isFrameOn;
-            frameBtn.classList.toggle('active-icon', isFrameOn);
+            frameBtn.classList.toggle('active-state', isFrameOn);
             viewfinder.classList.toggle('frame-mode', isFrameOn);
         });
 
@@ -200,11 +346,13 @@
             video.style.transform = currentFacingMode === "user" ? "scaleX(-1)" : "scaleX(1)";
         });
 
+        // Modals
         document.getElementById('open-gallery-btn').addEventListener('click', () => document.getElementById('gallery-overlay').classList.add('open'));
         document.getElementById('close-gallery-btn').addEventListener('click', () => document.getElementById('gallery-overlay').classList.remove('open'));
         infoBtn.addEventListener('click', () => document.getElementById('info-overlay').classList.add('open'));
         document.getElementById('close-info-btn').addEventListener('click', () => document.getElementById('info-overlay').classList.remove('open'));
 
+        // Snap Logic
         snapBtn.addEventListener('click', () => {
             screenFlash.style.transition = 'none'; screenFlash.style.opacity = '1';
             setTimeout(() => { screenFlash.style.transition = 'opacity 0.6s ease-out'; screenFlash.style.opacity = '0'; }, 50);
@@ -212,7 +360,7 @@
             const vw = Math.min(1920, video.videoWidth);
             const vh = vw / (video.videoWidth / video.videoHeight);
             const recipe = recipeSelect.value;
-            const recipeText = recipeSelect.options[recipeSelect.selectedIndex].text;
+            const recipeText = brandTitle.innerText;
 
             let padX = 0, padYTop = 0, padYBot = 0;
             if (isFrameOn) {
@@ -228,7 +376,7 @@
                 ctx.fillStyle = '#f4f4f4'; 
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.fillStyle = '#888';
-                ctx.font = `bold ${canvas.width * 0.035}px Courier`;
+                ctx.font = `bold ${canvas.width * 0.035}px 'Oswald', sans-serif`;
                 ctx.textAlign = 'center';
                 ctx.fillText(recipeText, canvas.width / 2, canvas.height - (padYBot / 2.5));
             }
@@ -276,7 +424,7 @@
                 ctx.fillRect(padX, padYTop, vw, vh);
 
                 ctx.globalCompositeOperation = 'overlay';
-                if (recipe === 'carlcruz') ctx.fillStyle = 'rgba(255, 150, 100, 0.1)'; // Slight warm tint to match R+1 B-2
+                if (recipe === 'carlcruz') ctx.fillStyle = 'rgba(255, 150, 100, 0.1)';
                 else if (recipe === 'kodak') ctx.fillStyle = 'rgba(255, 180, 0, 0.15)';
                 else if (recipe === 'fuji') ctx.fillStyle = 'rgba(0, 180, 120, 0.15)';
                 else if (recipe === 'kodachrome') ctx.fillStyle = 'rgba(255, 60, 50, 0.15)';
