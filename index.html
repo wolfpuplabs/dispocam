@@ -8,13 +8,13 @@
         @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Oswald:wght@500;700&display=swap');
 
         :root {
-            /* Default Theme (Kodak Gold) */
-            --bg-color: #F1C40F; /* Kuning Kodak */
+            /* Tema Default (Dispo Green) */
+            --bg-color: #39FF14; /* Neon Green ala David's Disposable */
             --text-color: #111;
-            --accent-color: #E74C3C; /* Merah */
-            --ui-panel: #222;
+            --accent-color: #E74C3C;
+            --ui-panel: #1a1a1a;
             --btn-bg: #111;
-            --btn-color: #F1C40F;
+            --btn-color: #39FF14;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -23,48 +23,23 @@
             width: 100%; height: 100%;
             background-color: var(--bg-color);
             color: var(--text-color);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             overflow: hidden;
             transition: background-color 0.5s ease, color 0.5s ease;
         }
 
         /* --- TEMA DINAMIS --- */
-        body.theme-fuji {
-            --bg-color: #006D44; /* Hijau Fuji */
-            --text-color: #FFF;
-            --accent-color: #E74C3C;
-            --btn-bg: #FFF;
-            --btn-color: #006D44;
-        }
-        body.theme-kodachrome {
-            --bg-color: #C41230; /* Merah Kodachrome */
-            --text-color: #F1C40F;
-            --accent-color: #111;
-            --btn-bg: #F1C40F;
-            --btn-color: #C41230;
-        }
-        body.theme-carl {
-            --bg-color: #D3D3D3; /* Silver Klasik */
-            --text-color: #222;
-            --accent-color: #444;
-            --btn-bg: #222;
-            --btn-color: #FFF;
-        }
-        body.theme-normal {
-            --bg-color: #1A1A1A;
-            --text-color: #EEE;
-            --accent-color: #777;
-            --btn-bg: #444;
-            --btn-color: #FFF;
-        }
+        body.theme-kodak { --bg-color: #F1C40F; --btn-color: #F1C40F; }
+        body.theme-fuji { --bg-color: #006D44; --text-color: #FFF; --btn-bg: #FFF; --btn-color: #006D44; }
+        body.theme-kodachrome { --bg-color: #C41230; --text-color: #F1C40F; --btn-bg: #F1C40F; --btn-color: #C41230; }
+        body.theme-ig { --bg-color: #E1306C; --text-color: #FFF; --btn-bg: #FFF; --btn-color: #E1306C; }
 
         .app-container {
             display: flex; flex-direction: column; height: 100vh; height: 100dvh;
-            /* Tekstur plastik kasar (Noise overlay) */
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.15'/%3E%3C/svg%3E");
         }
 
-        /* --- TOP BAR (ICONS) --- */
+        /* --- TOP BAR --- */
         .top-bar {
             display: flex; justify-content: space-between; align-items: center;
             padding: 15px 20px; z-index: 10;
@@ -73,17 +48,16 @@
         .icon-btn {
             background: var(--btn-bg); border: none; border-radius: 50%;
             width: 40px; height: 40px; display: flex; justify-content: center; align-items: center;
-            cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
-        .icon-btn svg { width: 20px; height: 20px; fill: var(--btn-color); transition: fill 0.3s; }
-        .icon-btn:active { transform: scale(0.9); }
+        .icon-btn svg { width: 20px; height: 20px; fill: var(--btn-color); }
         .icon-btn.active-state { background: var(--accent-color); }
         .icon-btn.active-state svg { fill: #FFF; }
 
         .brand-title {
             font-family: 'Oswald', sans-serif; font-size: 1.5rem; font-weight: 700;
             letter-spacing: 2px; text-transform: uppercase;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
 
         /* --- VIEWFINDER --- */
@@ -92,136 +66,111 @@
             padding: 10px 20px;
         }
         .viewfinder {
-            position: relative; width: 100%; max-width: 500px; aspect-ratio: 3/4;
-            background: #000; border-radius: 12px; overflow: hidden;
-            border: 8px solid var(--ui-panel);
-            box-shadow: inset 0 0 20px rgba(0,0,0,1), 0 10px 20px rgba(0,0,0,0.5);
+            position: relative; width: 100%; max-width: 400px; aspect-ratio: 3/4;
+            background: #000; border-radius: 20px; overflow: hidden;
+            border: 12px solid #111;
+            box-shadow: inset 0 0 20px rgba(0,0,0,1), 0 10px 25px rgba(0,0,0,0.6);
         }
-        video { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+        video { width: 100%; height: 100%; object-fit: cover; }
         
         /* Frame Mode CSS */
         .viewfinder.frame-mode video {
             width: 85%; height: 80%; margin: 5% auto 0; display: block;
-            border: 2px solid #ddd; background: #f4f4f4; object-fit: cover;
+            border: 1px solid #ddd; background: #f4f4f4; object-fit: cover;
         }
         .viewfinder.frame-mode::before {
             content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background: #f4f4f4; z-index: -1;
         }
 
-        /* Viewfinder Overlays */
-        .crosshair {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 40px; height: 40px; pointer-events: none; opacity: 0.5;
-        }
-        .crosshair::before, .crosshair::after {
-            content: ''; position: absolute; background: rgba(255,255,255,0.8);
-        }
-        .crosshair::before { top: 19px; left: 0; width: 40px; height: 2px; }
-        .crosshair::after { top: 0; left: 19px; width: 2px; height: 40px; }
-
         .live-date {
             position: absolute; bottom: 15px; right: 20px; font-family: 'Share Tech Mono', monospace;
             color: #ff5e00; font-size: 1.1rem; text-shadow: 1px 1px 4px rgba(255, 94, 0, 0.8); z-index: 2;
         }
-        .viewfinder.frame-mode .live-date { bottom: 60px; right: 15%; }
+        .viewfinder.frame-mode .live-date { bottom: 50px; right: 15%; }
         .screen-flash { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: white; opacity: 0; pointer-events: none; z-index: 10; }
 
-        /* --- BOTTOM CONTROLS (FILM ROLL & SHUTTER) --- */
+        /* --- BOTTOM CONTROLS --- */
         .bottom-panel {
-            background: var(--ui-panel); padding: 25px 20px 40px;
-            display: flex; flex-direction: column; align-items: center; gap: 20px;
-            border-top: 4px solid rgba(255,255,255,0.1);
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.5);
+            background: var(--ui-panel); padding: 20px 20px 35px;
+            display: flex; flex-direction: column; align-items: center; gap: 15px;
+            border-top: 2px solid #333;
         }
 
-        /* Film Selector Styling ala Rol Film */
         .film-selector-container {
             display: flex; align-items: center; background: var(--bg-color);
-            border-radius: 30px; padding: 5px 15px; width: 250px;
+            border-radius: 30px; padding: 5px 15px; width: 260px;
             box-shadow: inset 0 3px 6px rgba(0,0,0,0.4); border: 2px solid #000;
-        }
-        .film-exp {
-            font-family: 'Oswald', sans-serif; font-weight: bold; color: var(--text-color);
-            margin-right: 10px; font-size: 14px;
         }
         select {
             appearance: none; background: transparent; color: var(--text-color);
             border: none; font-family: 'Oswald', sans-serif; font-size: 16px;
-            font-weight: bold; text-align: left; outline: none; cursor: pointer; flex: 1;
-            text-transform: uppercase;
+            font-weight: bold; outline: none; flex: 1; text-transform: uppercase;
         }
         select option { background: #222; color: #fff; }
 
         .shutter-container { display: flex; justify-content: center; align-items: center; width: 100%; position: relative; }
         
-        /* Tactile Shutter Button */
         .shutter-btn {
-            width: 80px; height: 80px; border-radius: 50%;
+            width: 75px; height: 75px; border-radius: 50%;
             background: radial-gradient(circle, #eee 40%, #ccc 100%);
-            border: none; box-shadow: 0 6px 0 #888, 0 10px 15px rgba(0,0,0,0.5);
-            cursor: pointer; transition: all 0.1s;
+            border: none; box-shadow: 0 6px 0 #888, 0 8px 15px rgba(0,0,0,0.5);
+            cursor: pointer; transition: transform 0.1s;
         }
-        .shutter-btn:active {
-            transform: translateY(6px); box-shadow: 0 0 0 #888, 0 4px 5px rgba(0,0,0,0.5);
-            background: radial-gradient(circle, #ddd 40%, #aaa 100%);
-        }
+        .shutter-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #888; }
 
         .gallery-btn {
-            position: absolute; right: 0; width: 55px; height: 55px; border-radius: 8px;
-            overflow: hidden; border: 3px solid #444; background: #111; cursor: pointer;
+            position: absolute; right: 0; width: 50px; height: 50px; border-radius: 6px;
+            overflow: hidden; border: 2px solid #444; background: #111; cursor: pointer;
         }
         .gallery-btn img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* --- OVERLAYS (Gallery & Info) --- */
+        /* --- OVERLAYS (Gallery & Photo Viewer) --- */
         .full-overlay {
             position: fixed; top: 100%; left: 0; width: 100%; height: 100%;
-            background: #111; color: white; z-index: 100;
-            transition: top 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); display: flex; flex-direction: column;
+            background: #121212; color: white; z-index: 100;
+            transition: top 0.3s ease-in-out; display: flex; flex-direction: column;
         }
         .full-overlay.open { top: 0; }
-        .overlay-header { padding: 20px; display: flex; justify-content: space-between; border-bottom: 1px solid #333; align-items: center; background: #222;}
-        .close-btn { background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
         
-        .gallery-grid { padding: 10px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; overflow-y: auto; flex: 1; }
-        .gallery-grid img { width: 100%; border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-        .info-content { padding: 20px; overflow-y: auto; line-height: 1.6; }
+        .overlay-header { 
+            padding: 15px 20px; display: flex; justify-content: space-between; 
+            align-items: center; background: #1a1a1a; border-bottom: 1px solid #333;
+        }
+        
+        .text-btn {
+            background: none; border: none; color: white; font-size: 16px; 
+            font-weight: bold; cursor: pointer;
+        }
+        
+        .gallery-grid { padding: 5px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; overflow-y: auto; flex: 1; }
+        .gallery-grid img { width: 100%; aspect-ratio: 3/4; object-fit: cover; cursor: pointer; border-radius: 2px; }
+
+        /* Photo Viewer Specific */
+        .photo-viewer-content {
+            flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; background: #000;
+        }
+        .photo-viewer-content img { max-width: 100%; max-height: 100%; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        
+        .export-icon svg { width: 24px; height: 24px; fill: white; }
 
         canvas { display: none; }
     </style>
 </head>
-<body class="theme-kodak"> <!-- Default Theme -->
+<body class="theme-default">
 
     <div class="app-container">
-        <!-- Top Bar with SVG Icons -->
+        <!-- Top Bar -->
         <div class="top-bar">
-            <!-- Flash Icon -->
-            <button class="icon-btn" id="flash-btn">
-                <svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
-            </button>
-            
-            <!-- Frame Icon -->
-            <button class="icon-btn" id="frame-btn">
-                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg>
-            </button>
-            
-            <span class="brand-title" id="brand-title">KODAK 200</span>
-            
-            <!-- Flip Icon -->
-            <button class="icon-btn" id="flip-btn">
-                <svg viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
-            </button>
-            
-            <!-- Info Icon -->
-            <button class="icon-btn" id="info-btn">
-                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-            </button>
+            <button class="icon-btn" id="flash-btn"><svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg></button>
+            <button class="icon-btn" id="frame-btn"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg></button>
+            <span class="brand-title" id="brand-title">DISPO 35MM</span>
+            <button class="icon-btn" id="flip-btn"><svg viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg></button>
         </div>
 
         <!-- Viewfinder -->
         <div class="viewfinder-wrapper">
             <div class="viewfinder" id="viewfinder">
-                <div class="crosshair"></div>
                 <video id="video" autoplay playsinline></video>
                 <div class="live-date" id="live-date"></div>
                 <div class="screen-flash" id="screen-flash"></div>
@@ -231,16 +180,14 @@
         <!-- Bottom Controls -->
         <div class="bottom-panel">
             <div class="film-selector-container">
-                <div class="film-exp">36 EXP</div>
                 <select id="film-recipe">
-                    <option value="kodak">GOLD 200</option>
+                    <option value="dispo">DISPO GREEN</option>
+                    <option value="kodak">KODAK GOLD</option>
                     <option value="fuji">SUPERIA 800</option>
-                    <option value="kodachrome">KODACHROME</option>
-                    <option value="carlcruz">CARL CHROME</option>
-                    <option value="none">NORMAL</option>
+                    <option value="ig-clarendon">IG CLARENDON</option>
+                    <option value="ig-paris">IG PARIS</option>
                 </select>
-                <!-- Dropdown Icon -->
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--text-color)"><path d="M7 10l5 5 5-5z"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--text-color)"><path d="M7 10l5 5 5-5z"/></svg>
             </div>
             
             <div class="shutter-container">
@@ -252,29 +199,28 @@
         </div>
     </div>
 
-    <!-- Gallery Overlay -->
+    <!-- Gallery Overlay (Grid) -->
     <div class="full-overlay" id="gallery-overlay">
         <div class="overlay-header">
-            <h2 style="font-family: 'Oswald', sans-serif;">CAMERA ROLL</h2>
-            <button class="close-btn" id="close-gallery-btn">✖</button>
+            <button class="text-btn" id="close-gallery-btn">Cancel</button>
+            <h2 style="font-family: 'Oswald', sans-serif; font-size: 18px;">LIBRARY</h2>
+            <div style="width: 50px;"></div> <!-- Spacer -->
         </div>
         <div class="gallery-grid" id="gallery-grid"></div>
     </div>
 
-    <!-- Info Overlay -->
-    <div class="full-overlay" id="info-overlay">
+    <!-- Single Photo Viewer Overlay (Save/Export) -->
+    <div class="full-overlay" id="photo-viewer-overlay">
         <div class="overlay-header">
-            <h2 style="font-family: 'Oswald', sans-serif;">FILM INFO</h2>
-            <button class="close-btn" id="close-info-btn">✖</button>
+            <button class="text-btn" id="close-viewer-btn">✖</button>
+            <h2 style="font-family: 'Oswald', sans-serif; font-size: 16px; color: #aaa;">PREVIEW</h2>
+            <a id="download-link" href="#" download="dispo-snap.jpg" class="text-btn export-icon">
+                <!-- Export Icon -->
+                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+            </a>
         </div>
-        <div class="info-content">
-            <h3>Resep Film Tersedia:</h3><br>
-            <ul>
-                <li><strong>Kodak Gold 200:</strong> Tone kuning hangat, kontras medium.</li>
-                <li><strong>Fujicolor Superia 800:</strong> Tone cyan/greenish dengan kontras tajam.</li>
-                <li><strong>Kodachrome:</strong> Kontras sangat tinggi, merah pekat.</li>
-                <li><strong>Carl Cruz Chrome:</strong> Biru punchy, bayangan halus.</li>
-            </ul>
+        <div class="photo-viewer-content">
+            <img id="viewed-photo" src="" alt="Viewed Snap">
         </div>
     </div>
 
@@ -294,23 +240,29 @@
         const flashBtn = document.getElementById('flash-btn');
         const frameBtn = document.getElementById('frame-btn');
         const flipBtn = document.getElementById('flip-btn');
-        const infoBtn = document.getElementById('info-btn');
         const recipeSelect = document.getElementById('film-recipe');
+        
+        // Gallery Elements
+        const galleryThumb = document.getElementById('gallery-thumb');
+        const galleryGrid = document.getElementById('gallery-grid');
+        const galleryOverlay = document.getElementById('gallery-overlay');
+        const photoViewerOverlay = document.getElementById('photo-viewer-overlay');
+        const viewedPhoto = document.getElementById('viewed-photo');
+        const downloadLink = document.getElementById('download-link');
         
         let currentFacingMode = "environment";
         let isFlashOn = false;
         let isFrameOn = false;
 
-        // Dynamic Theme Switcher
+        // Dynamic Theme Matcher
         recipeSelect.addEventListener('change', (e) => {
             const val = e.target.value;
-            document.body.className = ''; // Reset
+            document.body.className = '';
             
             if(val === 'kodak') { document.body.classList.add('theme-kodak'); brandTitle.innerText = "KODAK 200"; }
-            else if(val === 'fuji') { document.body.classList.add('theme-fuji'); brandTitle.innerText = "FUJICOLOR"; }
-            else if(val === 'kodachrome') { document.body.classList.add('theme-kodachrome'); brandTitle.innerText = "KODACHROME"; }
-            else if(val === 'carlcruz') { document.body.classList.add('theme-carl'); brandTitle.innerText = "CARL CHROME"; }
-            else { document.body.classList.add('theme-normal'); brandTitle.innerText = "DIGITAL"; }
+            else if(val === 'fuji') { document.body.classList.add('theme-fuji'); brandTitle.innerText = "SUPERIA 800"; }
+            else if(val === 'ig-clarendon' || val === 'ig-paris') { document.body.classList.add('theme-ig'); brandTitle.innerText = "INSTA CAM"; }
+            else { document.body.classList.add('theme-default'); brandTitle.innerText = "DISPO 35MM"; }
         });
 
         function updateDate() {
@@ -328,31 +280,23 @@
         }
         initCamera();
 
-        // Toggle Buttons logic
-        flashBtn.addEventListener('click', () => {
-            isFlashOn = !isFlashOn;
-            flashBtn.classList.toggle('active-state', isFlashOn);
-        });
+        flashBtn.addEventListener('click', () => { isFlashOn = !isFlashOn; flashBtn.classList.toggle('active-state', isFlashOn); });
+        frameBtn.addEventListener('click', () => { isFrameOn = !isFrameOn; frameBtn.classList.toggle('active-state', isFrameOn); viewfinder.classList.toggle('frame-mode', isFrameOn); });
+        flipBtn.addEventListener('click', () => { currentFacingMode = currentFacingMode === "user" ? "environment" : "user"; initCamera(); video.style.transform = currentFacingMode === "user" ? "scaleX(-1)" : "scaleX(1)"; });
 
-        frameBtn.addEventListener('click', () => {
-            isFrameOn = !isFrameOn;
-            frameBtn.classList.toggle('active-state', isFrameOn);
-            viewfinder.classList.toggle('frame-mode', isFrameOn);
-        });
+        // Modals Logic
+        document.getElementById('open-gallery-btn').addEventListener('click', () => galleryOverlay.classList.add('open'));
+        document.getElementById('close-gallery-btn').addEventListener('click', () => galleryOverlay.classList.remove('open'));
+        document.getElementById('close-viewer-btn').addEventListener('click', () => photoViewerOverlay.classList.remove('open'));
 
-        flipBtn.addEventListener('click', () => {
-            currentFacingMode = currentFacingMode === "user" ? "environment" : "user";
-            initCamera();
-            video.style.transform = currentFacingMode === "user" ? "scaleX(-1)" : "scaleX(1)";
-        });
+        // Fungsi Buka Foto Single (Bisa Di-Save)
+        function openSinglePhoto(srcUrl) {
+            viewedPhoto.src = srcUrl;
+            downloadLink.href = srcUrl;
+            downloadLink.download = `snap_${new Date().getTime()}.jpg`;
+            photoViewerOverlay.classList.add('open');
+        }
 
-        // Modals
-        document.getElementById('open-gallery-btn').addEventListener('click', () => document.getElementById('gallery-overlay').classList.add('open'));
-        document.getElementById('close-gallery-btn').addEventListener('click', () => document.getElementById('gallery-overlay').classList.remove('open'));
-        infoBtn.addEventListener('click', () => document.getElementById('info-overlay').classList.add('open'));
-        document.getElementById('close-info-btn').addEventListener('click', () => document.getElementById('info-overlay').classList.remove('open'));
-
-        // Snap Logic
         snapBtn.addEventListener('click', () => {
             screenFlash.style.transition = 'none'; screenFlash.style.opacity = '1';
             setTimeout(() => { screenFlash.style.transition = 'opacity 0.6s ease-out'; screenFlash.style.opacity = '0'; }, 50);
@@ -364,99 +308,77 @@
 
             let padX = 0, padYTop = 0, padYBot = 0;
             if (isFrameOn) {
-                padX = vw * 0.05;    
-                padYTop = padX;      
-                padYBot = vw * 0.22; 
+                padX = vw * 0.05; padYTop = padX; padYBot = vw * 0.22; 
             }
 
             canvas.width = vw + (padX * 2);
             canvas.height = vh + padYTop + padYBot;
 
             if (isFrameOn) {
-                ctx.fillStyle = '#f4f4f4'; 
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = '#888';
-                ctx.font = `bold ${canvas.width * 0.035}px 'Oswald', sans-serif`;
-                ctx.textAlign = 'center';
-                ctx.fillText(recipeText, canvas.width / 2, canvas.height - (padYBot / 2.5));
+                ctx.fillStyle = '#f4f4f4'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#888'; ctx.font = `bold ${canvas.width * 0.035}px 'Oswald', sans-serif`;
+                ctx.textAlign = 'center'; ctx.fillText(recipeText, canvas.width / 2, canvas.height - (padYBot / 2.5));
             }
 
-            ctx.save();
-            ctx.beginPath();
-            ctx.rect(padX, padYTop, vw, vh); 
-            ctx.clip();
+            ctx.save(); ctx.beginPath(); ctx.rect(padX, padYTop, vw, vh); ctx.clip();
 
-            if (currentFacingMode === "user") {
-                ctx.translate(canvas.width, 0);
-                ctx.scale(-1, 1);
-            }
+            if (currentFacingMode === "user") { ctx.translate(canvas.width, 0); ctx.scale(-1, 1); }
 
-            // Filter Native Dasar
-            if (recipe === 'carlcruz') ctx.filter = 'contrast(1.1) saturate(1.5) brightness(0.95) sepia(0.1) hue-rotate(-5deg)';
-            else if (recipe === 'kodak') ctx.filter = 'contrast(1.1) saturate(1.3) sepia(0.2)';
+            // Base Filters
+            if (recipe === 'kodak') ctx.filter = 'contrast(1.1) saturate(1.3) sepia(0.2)';
             else if (recipe === 'fuji') ctx.filter = 'contrast(1.2) saturate(0.9) sepia(0.15) hue-rotate(10deg)';
-            else if (recipe === 'kodachrome') ctx.filter = 'contrast(1.4) saturate(1.2) brightness(0.9) sepia(0.1)';
-            else ctx.filter = 'none';
+            else if (recipe === 'ig-clarendon') ctx.filter = 'contrast(1.3) saturate(1.4) brightness(1.1)'; // High contrast, bright
+            else if (recipe === 'ig-paris') ctx.filter = 'contrast(0.9) brightness(1.15) sepia(0.15)'; // Soft, warm, bright
+            else ctx.filter = 'contrast(1.1) saturate(1.1)'; // Dispo default
 
             ctx.drawImage(video, padX, padYTop, vw, vh);
-            
-            ctx.restore(); 
-            ctx.save();
-            ctx.beginPath();
-            ctx.rect(padX, padYTop, vw, vh);
-            ctx.clip(); 
+            ctx.restore(); ctx.save(); ctx.beginPath(); ctx.rect(padX, padYTop, vw, vh); ctx.clip(); 
 
-            if (recipe !== 'none') {
-                const cx = padX + vw / 2;
-                const cy = padYTop + vh / 2;
-                const r = Math.max(vw, vh);
-                const vignette = ctx.createRadialGradient(cx, cy, r * 0.2, cx, cy, r * 0.7);
-                
-                if (isFlashOn) {
-                    vignette.addColorStop(0, 'rgba(255,255,255,0.15)');
-                    vignette.addColorStop(0.5, 'rgba(0,0,0,0)');
-                    vignette.addColorStop(1, 'rgba(0,0,0,0.8)');
-                } else {
-                    vignette.addColorStop(0, 'rgba(0,0,0,0)');
-                    vignette.addColorStop(1, 'rgba(0,0,0,0.6)');
-                }
-                ctx.fillStyle = vignette;
-                ctx.fillRect(padX, padYTop, vw, vh);
-
-                ctx.globalCompositeOperation = 'overlay';
-                if (recipe === 'carlcruz') ctx.fillStyle = 'rgba(255, 150, 100, 0.1)';
-                else if (recipe === 'kodak') ctx.fillStyle = 'rgba(255, 180, 0, 0.15)';
-                else if (recipe === 'fuji') ctx.fillStyle = 'rgba(0, 180, 120, 0.15)';
-                else if (recipe === 'kodachrome') ctx.fillStyle = 'rgba(255, 60, 50, 0.15)';
-                ctx.fillRect(padX, padYTop, vw, vh);
-                ctx.globalCompositeOperation = 'source-over';
-
-                if (Math.random() > 0.7) {
-                    const leak = ctx.createLinearGradient(padX, padYTop, padX + (vw * 0.3), padYTop);
-                    leak.addColorStop(0, 'rgba(255, 50, 0, 0.4)');
-                    leak.addColorStop(1, 'rgba(255, 50, 0, 0)');
-                    ctx.fillStyle = leak;
-                    ctx.globalCompositeOperation = 'screen';
-                    ctx.fillRect(padX, padYTop, vw, vh);
-                    ctx.globalCompositeOperation = 'source-over';
-                }
-
-                ctx.font = `bold ${vh * 0.04}px "Share Tech Mono", monospace`;
-                ctx.fillStyle = '#ff7b00'; 
-                ctx.textAlign = 'right';
-                ctx.shadowColor = '#ff5e00'; ctx.shadowBlur = 10; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 2;
-                ctx.fillText(liveDate.innerText, padX + vw - (vw * 0.05), padYTop + vh - (vh * 0.05));
-                ctx.shadowBlur = 0;
+            // Vignette & Overlays
+            const cx = padX + vw / 2; const cy = padYTop + vh / 2; const r = Math.max(vw, vh);
+            const vignette = ctx.createRadialGradient(cx, cy, r * 0.2, cx, cy, r * 0.7);
+            if (isFlashOn) {
+                vignette.addColorStop(0, 'rgba(255,255,255,0.15)'); vignette.addColorStop(0.5, 'rgba(0,0,0,0)'); vignette.addColorStop(1, 'rgba(0,0,0,0.8)');
+            } else {
+                vignette.addColorStop(0, 'rgba(0,0,0,0)'); vignette.addColorStop(1, 'rgba(0,0,0,0.5)');
             }
+            ctx.fillStyle = vignette; ctx.fillRect(padX, padYTop, vw, vh);
+
+            // Color Tints
+            ctx.globalCompositeOperation = 'overlay';
+            if (recipe === 'kodak') ctx.fillStyle = 'rgba(255, 180, 0, 0.15)';
+            else if (recipe === 'fuji') ctx.fillStyle = 'rgba(0, 180, 120, 0.15)';
+            else if (recipe === 'ig-clarendon') ctx.fillStyle = 'rgba(0, 100, 255, 0.15)'; // Blue tint in shadows
+            else if (recipe === 'ig-paris') ctx.fillStyle = 'rgba(255, 150, 150, 0.15)'; // Soft pink/peach tint
+            else ctx.fillStyle = 'rgba(57, 255, 20, 0.05)'; // Slight green tint for dispo
+            
+            ctx.fillRect(padX, padYTop, vw, vh);
+            ctx.globalCompositeOperation = 'source-over';
+
+            // Light leaks
+            if (Math.random() > 0.7) {
+                const leak = ctx.createLinearGradient(padX, padYTop, padX + (vw * 0.3), padYTop);
+                leak.addColorStop(0, 'rgba(255, 50, 0, 0.4)'); leak.addColorStop(1, 'rgba(255, 50, 0, 0)');
+                ctx.fillStyle = leak; ctx.globalCompositeOperation = 'screen'; ctx.fillRect(padX, padYTop, vw, vh); ctx.globalCompositeOperation = 'source-over';
+            }
+
+            // Date Stamp
+            ctx.font = `bold ${vh * 0.04}px "Share Tech Mono", monospace`;
+            ctx.fillStyle = '#ff7b00'; ctx.textAlign = 'right';
+            ctx.shadowColor = '#ff5e00'; ctx.shadowBlur = 10; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 2;
+            ctx.fillText(liveDate.innerText, padX + vw - (vw * 0.05), padYTop + vh - (vh * 0.05));
+            ctx.shadowBlur = 0;
             ctx.restore(); 
 
+            // Save to Local UI
             const dataURL = canvas.toDataURL('image/jpeg', 0.9);
-            const thumb = document.getElementById('gallery-thumb');
-            thumb.src = dataURL; thumb.style.display = 'block';
+            galleryThumb.src = dataURL; galleryThumb.style.display = 'block';
 
+            // Add to Grid with Click Event to open Photo Viewer
             const imgEl = document.createElement('img');
             imgEl.src = dataURL;
-            document.getElementById('gallery-grid').prepend(imgEl);
+            imgEl.addEventListener('click', () => openSinglePhoto(dataURL));
+            galleryGrid.prepend(imgEl);
         });
     </script>
 </body>
