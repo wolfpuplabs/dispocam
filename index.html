@@ -1,611 +1,738 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Disposable Pro Cam</title>
-    
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Dispo Cam">
-    <meta name="theme-color" content="#39FF14" id="theme-color-meta">
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Oswald:wght@500;700&family=VT323&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Dispo Cam</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Dispo Cam">
+<meta name="theme-color" content="#0b0b0c">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@500;700&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0b0c; --surface: #161618; --surface-2: #1f1f22; --line: rgba(255,255,255,.08);
+    --text: #f2f2f2; --muted: rgba(242,242,242,.5);
+    --accent: #39FF14; --accent-ink: #0b0b0c;
+    --paper: #f7f6f2;
+    --vf-ratio: .75;
+    --safe-t: env(safe-area-inset-top); --safe-b: env(safe-area-inset-bottom);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; overflow: hidden; overscroll-behavior: none; -webkit-user-select: none; user-select: none; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  svg.i { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
-        :root {
-            --bg-color: #39FF14; --text-color: #111; --accent-color: #E74C3C;
-            --ui-panel: #1a1a1a; --btn-bg: #111; --btn-color: #39FF14;
-        }
+  .app { height: 100vh; height: 100dvh; max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; padding-top: var(--safe-t); }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        
-        body, html {
-            width: 100%; height: 100%; background-color: var(--bg-color); color: var(--text-color);
-            font-family: 'Inter', sans-serif;
-            overflow: hidden; transition: background-color 0.5s ease, color 0.5s ease;
-        }
+  /* ---------- Top bar ---------- */
+  .top { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; padding: 12px 16px 8px; }
+  .tgroup { display: flex; gap: 8px; }
+  .tbtn { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--surface); border: 1px solid var(--line); color: var(--muted); transition: background .2s, color .2s, border-color .2s; }
+  .tbtn.on { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
+  .brand { text-align: center; min-width: 0; }
+  .brand-name { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 18px; letter-spacing: 2px; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .brand-sub { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-top: 1px; }
+  .brand-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-right: 6px; vertical-align: 1px; box-shadow: 0 0 8px var(--accent); }
 
-        body.theme-default { --bg-color: #39FF14; --btn-color: #39FF14; }
-        body.theme-kodak { --bg-color: #F1C40F; --btn-color: #F1C40F; }
-        body.theme-fuji { --bg-color: #006D44; --text-color: #FFF; --btn-bg: #FFF; --btn-color: #006D44; }
-        body.theme-chrome { --bg-color: #D3D3D3; --text-color: #222; --btn-bg: #222; --btn-color: #FFF; }
-        body.theme-bw { --bg-color: #111; --text-color: #FFF; --btn-bg: #333; --btn-color: #FFF; }
-        body.theme-ig { --bg-color: #E1306C; --text-color: #FFF; --btn-bg: #FFF; --btn-color: #E1306C; }
-        body.theme-flash { --bg-color: #FFF; --text-color: #111; --btn-bg: #222; --btn-color: #FFF; }
-        body.theme-moody { --bg-color: #2c3e50; --text-color: #FFF; --btn-bg: #FFF; --btn-color: #2c3e50; }
+  /* ---------- Viewfinder ---------- */
+  .vf-wrap { flex: 1; min-height: 0; display: grid; place-items: center; padding: 6px 16px; container-type: size; }
+  .vf { position: relative; width: min(100%, 420px); aspect-ratio: var(--vf-ratio); background: #000; border-radius: 18px; overflow: hidden; box-shadow: 0 0 0 1px var(--line), 0 24px 60px rgba(0,0,0,.7); transition: background .3s; container-type: size; touch-action: pan-y; }
+  @supports (width: 1cqh) { .vf { width: min(100cqw, calc(100cqh * var(--vf-ratio))); } }
+  .vf.framed { background: var(--paper); }
+  .photo { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: hidden; container-type: size; background: #000; }
+  .vf.framed .photo { left: 4.545%; width: 90.91%; top: 3.119%; height: 83.16%; box-shadow: 0 0 0 1px rgba(0,0,0,.12); }
+  .vf.rounded .photo { border-radius: 5cqw; }
+  .vf.framed.rounded { border-radius: 7cqw; }
+  #preview { width: 100%; height: 100%; display: block; }
+  #video { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+  .stamp { position: absolute; right: 5cqw; bottom: 5cqh; font-family: 'VT323', monospace; font-size: 4.5cqh; letter-spacing: .1em; color: #ff7b00; text-shadow: 1px 1px 5px rgba(255,94,0,.8); pointer-events: none; line-height: 1; }
+  .vf.rounded .stamp { right: 7.5cqw; bottom: 7cqh; }
+  .vf.bw .stamp { color: #fff; text-shadow: 1px 1px 4px rgba(0,0,0,.8); }
+  .vf.nodate .stamp { display: none; }
+  .frame-label { position: absolute; left: 0; right: 0; bottom: 4.2%; text-align: center; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 3.2cqw; color: #888; display: none; }
+  .vf.framed .frame-label { display: block; }
+  .blink { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; z-index: 5; }
+  .toast { position: absolute; top: 14px; left: 50%; transform: translate(-50%, -8px); background: rgba(0,0,0,.65); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #fff; font-family: 'Oswald', sans-serif; letter-spacing: 2px; font-size: 13px; padding: 6px 14px; border-radius: 99px; opacity: 0; transition: .25s; pointer-events: none; z-index: 6; white-space: nowrap; }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .vf-msg { position: absolute; inset: 0; display: none; flex-direction: column; gap: 14px; align-items: center; justify-content: center; text-align: center; padding: 24px; color: #ddd; font-size: 14px; line-height: 1.5; background: #000; z-index: 7; }
+  .vf-msg.show { display: flex; }
+  .pill { background: var(--accent); color: var(--accent-ink); font-weight: 700; padding: 10px 18px; border-radius: 99px; font-size: 14px; }
 
-        .app-container {
-            display: flex; flex-direction: column; height: 100vh; height: 100dvh;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.15'/%3E%3C/svg%3E");
-            padding-top: env(safe-area-inset-top);
-        }
+  /* ---------- Film strip ---------- */
+  .strip-wrap { position: relative; padding: 10px 0 4px; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+  .strip { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px calc(50% - 32px) 6px; scrollbar-width: none; }
+  .strip::-webkit-scrollbar { display: none; }
+  .film { flex: 0 0 64px; scroll-snap-align: center; display: flex; flex-direction: column; align-items: center; gap: 6px; opacity: .55; transition: opacity .2s; }
+  .film.on { opacity: 1; }
+  .can { width: 56px; height: 56px; border-radius: 14px; display: grid; place-items: center; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: .5px; position: relative; overflow: hidden; transition: transform .2s, box-shadow .2s; box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); }
+  .can::after { content: ""; position: absolute; inset: 0; background: linear-gradient(160deg, rgba(255,255,255,.28), transparent 45%, rgba(0,0,0,.25)); }
+  .film.on .can { transform: scale(1.06); box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent); }
+  .film-name { font-size: 9.5px; font-weight: 600; letter-spacing: .4px; text-transform: uppercase; color: var(--muted); white-space: nowrap; max-width: 72px; overflow: hidden; text-overflow: ellipsis; }
+  .film.on .film-name { color: var(--text); }
 
-        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px 15px; z-index: 10; gap: 8px; }
-        
-        .icon-btn {
-            background: var(--btn-bg); border: none; border-radius: 50%; flex-shrink: 0;
-            width: 38px; height: 38px; display: flex; justify-content: center; align-items: center;
-            cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-        }
-        .icon-btn svg { width: 18px; height: 18px; fill: var(--btn-color); }
-        .icon-btn.active-state { background: var(--accent-color); }
-        .icon-btn.active-state svg { fill: #FFF; }
+  /* ---------- Controls ---------- */
+  .controls { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 10px 28px calc(18px + var(--safe-b)); }
+  .thumb { justify-self: start; width: 52px; height: 52px; border-radius: 12px; overflow: hidden; background: var(--surface); border: 1px solid var(--line); position: relative; }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; display: none; }
+  .thumb .count { position: absolute; top: -6px; right: -6px; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 10px; background: var(--accent); color: var(--accent-ink); font-size: 11px; font-weight: 700; display: none; place-items: center; }
+  .shutter { width: 80px; height: 80px; border-radius: 50%; border: 4px solid var(--text); display: grid; place-items: center; }
+  .shutter span { width: 62px; height: 62px; border-radius: 50%; background: var(--text); transition: transform .12s, background .2s; box-shadow: inset 0 -4px 0 rgba(0,0,0,.12); }
+  .shutter:active span, .shutter.busy span { transform: scale(.86); background: var(--accent); }
+  .flip { justify-self: end; width: 52px; height: 52px; border-radius: 50%; background: var(--surface); border: 1px solid var(--line); display: grid; place-items: center; transition: transform .4s; }
+  .flip.spin { transform: rotate(180deg); }
+  .flip svg.i { width: 22px; height: 22px; }
 
-        .brand-title {
-            font-family: 'Oswald', sans-serif; font-size: 1.3rem; font-weight: 700;
-            letter-spacing: 1.5px; text-transform: uppercase; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-            text-align: center; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
+  /* ---------- Overlays ---------- */
+  .sheet { position: fixed; inset: 0; background: var(--bg); z-index: 50; display: flex; flex-direction: column; padding-top: var(--safe-t); transform: translateY(100%); transition: transform .32s cubic-bezier(.2,.8,.2,1); visibility: hidden; }
+  .sheet.open { transform: none; visibility: visible; }
+  .sheet-head { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+  .sheet-head > :first-child { justify-self: start; } .sheet-head > :last-child { justify-self: end; }
+  .sheet-title { font-family: 'Oswald', sans-serif; letter-spacing: 3px; font-size: 15px; text-transform: uppercase; }
+  .sheet-title small { display: block; text-align: center; font-family: 'Inter'; letter-spacing: 1px; font-size: 10px; color: var(--muted); }
+  .txt { font-size: 15px; font-weight: 600; padding: 6px 4px; }
+  .txt.accent { color: var(--accent); }
+  .ibtn { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; }
+  .ibtn:active { background: var(--surface-2); }
 
-        .viewfinder-wrapper { flex: 1; display: flex; justify-content: center; align-items: center; padding: 10px 20px; }
-        .viewfinder {
-            position: relative; width: 100%; max-width: 400px; aspect-ratio: 3/4; background: #000;
-            border-radius: 20px; overflow: hidden; border: 12px solid #111;
-            box-shadow: inset 0 0 20px rgba(0,0,0,1), 0 10px 25px rgba(0,0,0,0.6);
-        }
-        video { width: 100%; height: 100%; object-fit: cover; transition: filter 0.3s; }
-        
-        .viewfinder.frame-mode video { width: 85%; height: 80%; margin: 5% auto 0; display: block; background: #f4f4f4; object-fit: cover; }
-        .viewfinder.frame-mode::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #f4f4f4; z-index: -1; }
-        .viewfinder.rounded-mode video { border-radius: 24px; }
+  .grid { flex: 1; overflow-y: auto; padding: 3px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; align-content: start; }
+  .cell { position: relative; aspect-ratio: 3/4; background: var(--surface); overflow: hidden; }
+  .cell img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .2s, opacity .2s; }
+  .cell .chk { position: absolute; right: 6px; bottom: 6px; width: 22px; height: 22px; border-radius: 50%; border: 2px solid #fff; background: rgba(0,0,0,.3); display: none; place-items: center; }
+  .selecting .cell .chk { display: grid; }
+  .cell.sel img { transform: scale(.9); opacity: .75; }
+  .cell.sel .chk { background: var(--accent); border-color: var(--accent); }
+  .cell.sel .chk::after { content: ""; width: 9px; height: 5px; border: solid var(--accent-ink); border-width: 0 0 2px 2px; transform: translateY(-1px) rotate(-45deg); }
+  .empty { grid-column: 1/-1; text-align: center; color: var(--muted); padding: 80px 20px; font-size: 14px; line-height: 1.6; }
 
-        .live-date { 
-            position: absolute; bottom: 15px; right: 20px; 
-            font-family: 'VT323', monospace; color: #ff5e00; font-size: 1.7rem; 
-            letter-spacing: 2px; text-shadow: 1px 1px 4px rgba(255, 94, 0, 0.8); z-index: 2; 
-        }
-        .viewfinder.frame-mode .live-date { bottom: 50px; right: 15%; }
-        .screen-flash { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: white; opacity: 0; pointer-events: none; z-index: 10; }
+  .bar { display: none; gap: 10px; padding: 12px 16px calc(12px + var(--safe-b)); border-top: 1px solid var(--line); background: var(--surface); }
+  .bar.show { display: flex; }
+  .bar button { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border-radius: 12px; font-weight: 600; font-size: 14px; background: var(--surface-2); }
+  .bar button.primary { background: var(--accent); color: var(--accent-ink); }
+  .bar button.danger { color: #ff5a5a; flex: 0 0 auto; padding: 12px 16px; }
+  .bar button:disabled { opacity: .4; }
 
-        .bottom-panel {
-            background: var(--ui-panel); padding: 20px 20px 35px;
-            display: flex; flex-direction: column; align-items: center; gap: 15px;
-            border-top: 2px solid #333; padding-bottom: calc(35px + env(safe-area-inset-bottom));
-        }
+  .viewer { flex: 1; min-height: 0; display: grid; place-items: center; padding: 16px; background: #000; touch-action: pan-y; }
+  .viewer img { max-width: 100%; max-height: 100%; object-fit: contain; -webkit-touch-callout: default; -webkit-user-select: auto; user-select: auto; }
 
-        .film-selector-container {
-            display: flex; align-items: center; background: var(--bg-color);
-            border-radius: 30px; padding: 5px 15px; width: 320px; 
-            box-shadow: inset 0 3px 6px rgba(0,0,0,0.4); border: 2px solid #000;
-        }
-        select { 
-            appearance: none; background: transparent; color: var(--text-color); border: none; 
-            font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.5px;
-            outline: none; flex: 1; text-transform: uppercase; 
-        }
-        select optgroup { background: #111; color: var(--bg-color); font-weight: bold; }
-        select option { background: #222; color: #fff; font-weight: normal; }
-
-        .shutter-container { display: flex; justify-content: center; align-items: center; width: 100%; position: relative; }
-        .shutter-btn {
-            width: 75px; height: 75px; border-radius: 50%; background: radial-gradient(circle, #eee 40%, #ccc 100%);
-            border: none; box-shadow: 0 6px 0 #888, 0 8px 15px rgba(0,0,0,0.5); cursor: pointer; transition: transform 0.1s;
-        }
-        .shutter-btn:active { transform: translateY(6px); box-shadow: 0 0 0 #888; }
-        
-        .gallery-btn { position: absolute; right: 0; width: 50px; height: 50px; border-radius: 6px; overflow: hidden; border: 2px solid #444; background: #111; cursor: pointer; }
-        .gallery-btn img { width: 100%; height: 100%; object-fit: cover; }
-
-        /* --- OVERLAYS --- */
-        .full-overlay {
-            position: fixed; top: 100%; left: 0; width: 100%; height: 100%; background: #121212; color: white; z-index: 100;
-            transition: top 0.3s ease-in-out; display: flex; flex-direction: column; padding-top: env(safe-area-inset-top);
-        }
-        .full-overlay.open { top: 0; }
-        
-        .overlay-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: #1a1a1a; border-bottom: 1px solid #333; }
-        .text-btn { background: none; border: none; color: white; font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; }
-        .text-btn.highlight { color: #39FF14; }
-        .overlay-title { font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 2px; color: #ccc; text-transform: uppercase; }
-
-        .gallery-grid { padding: 5px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; overflow-y: auto; flex: 1; align-content: flex-start;}
-        .gallery-item { position: relative; cursor: pointer; }
-        .gallery-item img { display: block; width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 4px; transition: 0.2s; }
-        .gallery-item.selected::after {
-            content: '✓'; position: absolute; bottom: 8px; right: 8px; background: #39FF14; color: black; font-weight: bold; font-family: sans-serif;
-            width: 22px; height: 22px; border-radius: 50%; display: flex; justify-content: center; align-items: center;
-            border: 2px solid black; box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-        }
-        .gallery-item.selected img { opacity: 0.6; border: 2px solid #39FF14; transform: scale(0.95); }
-
-        .library-actions { display: none; justify-content: space-between; align-items: center; padding: 20px; background: #1a1a1a; border-top: 1px solid #333; padding-bottom: calc(20px + env(safe-area-inset-bottom)); }
-        .library-actions.show { display: flex; }
-        .action-primary { background: #39FF14; color: black; border: none; padding: 12px 20px; border-radius: 20px; font-family: 'Inter', sans-serif; font-weight: 700; font-size: 15px; cursor: pointer; display: flex; align-items: center; gap: 8px; flex: 1; justify-content: center; }
-        .action-primary svg { width: 18px; height: 18px; fill: black; }
-
-        .photo-viewer-content { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; background: #000; position: relative; }
-        .photo-viewer-content img { max-width: 100%; max-height: 100%; box-shadow: 0 0 20px rgba(0,0,0,0.5); user-select: none; -webkit-touch-callout: default; }
-        .action-icons { display: flex; gap: 15px; align-items: center; }
-        .export-icon svg { width: 22px; height: 22px; fill: white; }
-
-        canvas { display: none; }
-    </style>
+  canvas.hidden { display: none; }
+</style>
 </head>
-<body class="theme-default">
-
-    <div class="app-container">
-        <!-- Top Bar -->
-        <div class="top-bar">
-            <button class="icon-btn" id="flash-btn"><svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg></button>
-            <button class="icon-btn" id="frame-btn"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg></button>
-            <button class="icon-btn" id="round-btn"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="6" ry="6" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
-            
-            <span class="brand-title" id="brand-title">DISPO 35MM</span>
-            <button class="icon-btn" id="flip-btn"><svg viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg></button>
-        </div>
-
-        <div class="viewfinder-wrapper">
-            <div class="viewfinder" id="viewfinder">
-                <video id="video" autoplay playsinline></video>
-                <div class="live-date" id="live-date"></div>
-                <div class="screen-flash" id="screen-flash"></div>
-            </div>
-        </div>
-
-        <!-- Bottom Controls -->
-        <div class="bottom-panel">
-            <div class="film-selector-container">
-                <select id="film-recipe">
-                    <optgroup label="Moody Aesthetic">
-                        <option value="moody-amber">MOODY AMBER (GOLD)</option>
-                        <option value="faded-teal">FADED TEAL (MIST)</option>
-                        <option value="dark-cyan">DARK CYAN (OCEAN)</option>
-                    </optgroup>
-                    <optgroup label="Extremes">
-                        <option value="hard-flash">HARD FLASH (NIGHT)</option>
-                    </optgroup>
-                    <optgroup label="Dispo Cameras">
-                        <option value="dispo">DISPO GREEN</option>
-                        <option value="kodak-gold">KODAK GOLD 200</option>
-                        <option value="superia">SUPERIA 800</option>
-                    </optgroup>
-                    <optgroup label="Fuji X Weekly">
-                        <option value="classic-neg">CLASSIC NEGATIVE</option>
-                        <option value="kodachrome64">KODACHROME 64</option>
-                        <option value="portra400">KODAK PORTRA 400</option>
-                        <option value="trix400">KODAK TRI-X 400 (B&W)</option>
-                        <option value="ilfordhp5">ILFORD HP5 (B&W)</option>
-                        <option value="cinestill800t">CINESTILL 800T</option>
-                        <option value="industrial100">FUJICOLOR INDUSTRIAL</option>
-                        <option value="velvia">FUJI VELVIA</option>
-                    </optgroup>
-                    <optgroup label="Instagram Filters (AI)">
-                        <option value="ig-90s">90s DREAMS</option>
-                        <option value="ig-filmgrade">FILM GRADE</option>
-                        <option value="ig-cinematic">CINEMATIC</option>
-                    </optgroup>
-                </select>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--text-color)"><path d="M7 10l5 5 5-5z"/></svg>
-            </div>
-            
-            <div class="shutter-container">
-                <button class="shutter-btn" id="snap"></button>
-                <div class="gallery-btn" id="open-gallery-btn">
-                    <img id="gallery-thumb" src="" alt="" style="display: none;">
-                </div>
-            </div>
-        </div>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="tgroup">
+      <button class="tbtn" id="flash-btn" aria-label="Flash"><svg class="i" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></button>
+      <button class="tbtn" id="date-btn" aria-label="Date stamp"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></button>
     </div>
-
-    <!-- Gallery Overlay -->
-    <div class="full-overlay" id="gallery-overlay">
-        <div class="overlay-header">
-            <button class="text-btn" id="close-gallery-btn">Cancel</button>
-            <h2 class="overlay-title">LIBRARY</h2>
-            <button class="text-btn highlight" id="select-mode-btn">Select</button>
-        </div>
-        <div class="gallery-grid" id="gallery-grid"></div>
-        
-        <div class="library-actions" id="library-actions">
-            <button class="action-primary" id="multi-share-btn">
-                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                Save/Share (<span id="select-count">0</span>)
-            </button>
-        </div>
+    <div class="brand">
+      <div class="brand-name" id="brand-name">DISPO</div>
+      <div class="brand-sub"><span class="brand-dot"></span><span id="brand-sub">Disposable</span></div>
     </div>
-
-    <!-- Photo Viewer Overlay -->
-    <div class="full-overlay" id="photo-viewer-overlay">
-        <div class="overlay-header">
-            <button class="text-btn" id="close-viewer-btn">Back</button>
-            <h2 class="overlay-title">PREVIEW</h2>
-            <div class="action-icons">
-                <button class="text-btn export-icon" id="single-share-btn">
-                    <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
-                </button>
-            </div>
-        </div>
-        <div class="photo-viewer-content">
-            <img id="viewed-photo" src="" alt="Viewed Snap">
-        </div>
+    <div class="tgroup">
+      <button class="tbtn" id="frame-btn" aria-label="Paper frame"><svg class="i" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1"/><rect x="7" y="6" width="10" height="9"/></svg></button>
+      <button class="tbtn" id="round-btn" aria-label="Rounded corners"><svg class="i" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="5"/></svg></button>
     </div>
+  </header>
 
-    <canvas id="canvas"></canvas>
+  <div class="vf-wrap">
+    <div class="vf" id="vf">
+      <div class="photo">
+        <canvas id="preview"></canvas>
+        <div class="stamp" id="stamp"></div>
+      </div>
+      <div class="frame-label" id="frame-label"></div>
+      <video id="video" autoplay playsinline muted></video>
+      <div class="toast" id="toast"></div>
+      <div class="blink" id="blink"></div>
+      <div class="vf-msg" id="vf-msg">
+        <div id="vf-msg-text">Izinkan akses kamera untuk mulai memotret.</div>
+        <button class="pill" id="retry-btn">Coba lagi</button>
+      </div>
+    </div>
+  </div>
 
-    <script>
-        const video = document.getElementById('video');
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const snapBtn = document.getElementById('snap');
-        const viewfinder = document.getElementById('viewfinder');
-        const screenFlash = document.getElementById('screen-flash');
-        const liveDate = document.getElementById('live-date');
-        const brandTitle = document.getElementById('brand-title');
-        const themeMeta = document.getElementById('theme-color-meta');
-        
-        const flashBtn = document.getElementById('flash-btn');
-        const frameBtn = document.getElementById('frame-btn');
-        const roundBtn = document.getElementById('round-btn');
-        const flipBtn = document.getElementById('flip-btn');
-        const recipeSelect = document.getElementById('film-recipe');
-        const singleShareBtn = document.getElementById('single-share-btn');
-        
-        const galleryThumb = document.getElementById('gallery-thumb');
-        const galleryGrid = document.getElementById('gallery-grid');
-        const galleryOverlay = document.getElementById('gallery-overlay');
-        const photoViewerOverlay = document.getElementById('photo-viewer-overlay');
-        const viewedPhoto = document.getElementById('viewed-photo');
-        
-        const selectModeBtn = document.getElementById('select-mode-btn');
-        const libraryActions = document.getElementById('library-actions');
-        const selectCountText = document.getElementById('select-count');
-        const multiShareBtn = document.getElementById('multi-share-btn');
-        
-        let currentFacingMode = "environment";
-        let isFlashOn = false;
-        let isFrameOn = true; 
-        let isRoundOn = false;
-        let currentPhotoDataUrl = "";
-        
-        let isSelectMode = false;
-        let selectedPhotos = new Set();
+  <div class="strip-wrap"><div class="strip" id="strip"></div></div>
 
-        document.querySelectorAll('button').forEach(btn => btn.addEventListener('contextmenu', e => e.preventDefault()));
-        
-        frameBtn.classList.toggle('active-state', isFrameOn);
-        viewfinder.classList.toggle('frame-mode', isFrameOn);
+  <div class="controls">
+    <button class="thumb" id="thumb" aria-label="Library"><img id="thumb-img" alt=""><span class="count" id="thumb-count"></span></button>
+    <button class="shutter" id="shutter" aria-label="Ambil foto"><span></span></button>
+    <button class="flip" id="flip-btn" aria-label="Ganti kamera"><svg class="i" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg></button>
+  </div>
+</div>
 
-        roundBtn.addEventListener('click', () => { 
-            isRoundOn = !isRoundOn; 
-            roundBtn.classList.toggle('active-state', isRoundOn);
-            viewfinder.classList.toggle('rounded-mode', isRoundOn);
-        });
+<!-- Library -->
+<section class="sheet" id="library">
+  <div class="sheet-head">
+    <button class="ibtn" id="lib-close" aria-label="Tutup"><svg class="i" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+    <div class="sheet-title">Library<small id="lib-count">0 foto</small></div>
+    <button class="txt accent" id="select-btn">Pilih</button>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="bar" id="lib-bar">
+    <button class="danger" id="multi-del" aria-label="Hapus"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>
+    <button class="primary" id="multi-share"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Simpan / Bagikan (<span id="sel-count">0</span>)</button>
+  </div>
+</section>
 
-        // UPDATE CSS FILTER LIVE PREVIEW
-        function getCssFilterString(recipe) {
-            if (recipe === 'moody-amber') return 'contrast(1.3) brightness(0.9) saturate(0.85) sepia(0.3)';
-            if (recipe === 'faded-teal') return 'contrast(0.85) brightness(1.1) saturate(0.8) sepia(0.1)';
-            if (recipe === 'dark-cyan') return 'contrast(1.4) brightness(0.85) saturate(0.9) sepia(0.15) hue-rotate(-10deg)';
-            
-            if (recipe === 'hard-flash') return 'contrast(1.5) saturate(1.2) brightness(1.15) sepia(0.15)';
-            if (recipe === 'kodak-gold') return 'contrast(1.1) saturate(1.3) sepia(0.2)';
-            if (recipe === 'superia') return 'contrast(1.2) saturate(0.9) sepia(0.15) hue-rotate(10deg)';
-            if (recipe === 'portra400') return 'contrast(0.95) saturate(1.1) sepia(0.1) brightness(1.05)';
-            if (recipe === 'velvia') return 'contrast(1.3) saturate(1.5) brightness(1.05)';
-            if (recipe === 'classic-neg') return 'contrast(1.3) saturate(0.85) sepia(0.1) hue-rotate(5deg)';
-            if (recipe === 'kodachrome64') return 'contrast(1.25) saturate(1.2) sepia(0.1)';
-            if (recipe === 'trix400' || recipe === 'ilfordhp5') return 'grayscale(100%) contrast(1.4) brightness(0.95)';
-            if (recipe === 'cinestill800t') return 'contrast(1.25) saturate(1.1) hue-rotate(-10deg) brightness(0.95)';
-            if (recipe === 'industrial100') return 'contrast(1.15) saturate(1.2) hue-rotate(-5deg)';
-            if (recipe === 'ig-90s') return 'contrast(0.9) brightness(1.15) saturate(1.3) sepia(0.2) hue-rotate(-10deg)';
-            if (recipe === 'ig-filmgrade') return 'contrast(0.9) brightness(1.1) saturate(0.7) sepia(0.2) hue-rotate(10deg)';
-            if (recipe === 'ig-cinematic') return 'contrast(1.3) saturate(1.2) sepia(0.3) hue-rotate(-15deg)';
-            return 'contrast(1.05) saturate(1.1)';
-        }
+<!-- Viewer -->
+<section class="sheet" id="viewer">
+  <div class="sheet-head">
+    <button class="ibtn" id="view-close" aria-label="Kembali"><svg class="i" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></svg></button>
+    <div class="sheet-title" id="view-title">Foto<small id="view-sub"></small></div>
+    <span></span>
+  </div>
+  <div class="viewer" id="view-stage"><img id="view-img" alt="Foto"></div>
+  <div class="bar show">
+    <button class="danger" id="view-del" aria-label="Hapus"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>
+    <button id="view-save"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Simpan</button>
+    <button class="primary" id="view-share"><svg class="i" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>Bagikan</button>
+  </div>
+</section>
 
-        recipeSelect.addEventListener('change', (e) => {
-            const val = e.target.value;
-            document.body.className = '';
-            video.style.filter = getCssFilterString(val);
-            
-            if(['moody-amber', 'faded-teal', 'dark-cyan'].includes(val)) { document.body.classList.add('theme-moody'); themeMeta.content = "#2c3e50"; brandTitle.innerText = val.replace('-', ' ').toUpperCase(); }
-            else if(val === 'hard-flash') { document.body.classList.add('theme-flash'); themeMeta.content = "#FFFFFF"; brandTitle.innerText = "DIRECT FLASH"; }
-            else if(['kodak-gold', 'portra400'].includes(val)) { document.body.classList.add('theme-kodak'); themeMeta.content = "#F1C40F"; brandTitle.innerText = val === 'portra400' ? "PORTRA 400" : "KODAK GOLD"; }
-            else if(['superia', 'velvia', 'industrial100'].includes(val)) { document.body.classList.add('theme-fuji'); themeMeta.content = "#006D44"; brandTitle.innerText = val === 'velvia' ? "VELVIA VIVID" : (val === 'industrial100' ? "FUJI INDUSTRIAL" : "SUPERIA 800"); }
-            else if(['classic-neg', 'kodachrome64', 'cinestill800t'].includes(val)) { document.body.classList.add('theme-chrome'); themeMeta.content = "#D3D3D3"; brandTitle.innerText = val.replace('-', ' ').toUpperCase(); }
-            else if(['trix400', 'ilfordhp5'].includes(val)) { document.body.classList.add('theme-bw'); themeMeta.content = "#111111"; brandTitle.innerText = val === 'trix400' ? "KODAK TRI-X" : "ILFORD HP5"; }
-            else if(val.startsWith('ig-')) { document.body.classList.add('theme-ig'); themeMeta.content = "#E1306C"; brandTitle.innerText = val.replace('ig-', '').toUpperCase(); }
-            else { document.body.classList.add('theme-default'); themeMeta.content = "#39FF14"; brandTitle.innerText = "DISPO 35MM"; }
-        });
+<script>
+(() => {
+'use strict';
 
-        function updateDate() {
-            const d = new Date();
-            liveDate.innerText = `'${String(d.getFullYear()).slice(2)} ${String(d.getMonth() + 1).padStart(2, '0')} ${String(d.getDate()).padStart(2, '0')}`;
-        }
-        updateDate();
+/* =====================================================================
+   FILM RECIPES
+   Every value feeds one shader, so preview and saved photo are identical.
+   wb: white-balance multipliers | black/white: output levels (fade / tint)
+   shadow/high: split-tone offsets | contrast: S-curve strength (1 = none)
+   ===================================================================== */
+const BASE = {
+  exposure: 0, contrast: 1, sat: 1, wb: [1,1,1], bw: 0, mix: [.30,.59,.11],
+  black: [0,0,0], white: [1,1,1], shadow: [0,0,0], high: [0,0,0],
+  vignette: .3, grain: .05, grainSize: 1, bloom: 0, hal: 0, halColor: [1,.32,.12], flash: 0, leak: false
+};
+const FILMS = [
+  { id:'dispo', name:'Dispo Green', short:'DISPO', cat:'Disposable', accent:'#39FF14', label:'DISPO 35MM',
+    exposure:.1, contrast:1.15, sat:1.05, wb:[1,1.03,.95], black:[.04,.06,.04], white:[.97,.98,.92], shadow:[-.01,.02,0], high:[.02,.02,-.02], vignette:.45, grain:.08, leak:true },
+  { id:'kodak-gold', name:'Kodak Gold 200', short:'GOLD', cat:'Disposable · ISO 200', accent:'#F5B700', label:'KODAK GOLD 200',
+    exposure:.05, contrast:1.12, sat:1.15, wb:[1.06,1,.86], black:[.05,.04,.03], white:[1,.97,.88], shadow:[0,0,.01], high:[.03,.015,-.02], vignette:.35, grain:.06, leak:true },
+  { id:'superia', name:'Superia 800', short:'800', cat:'Disposable · ISO 800', accent:'#00A86B', label:'FUJI SUPERIA 800',
+    contrast:1.15, wb:[.98,1.02,.98], black:[.04,.06,.06], shadow:[-.02,.02,.02], high:[.01,.01,-.01], vignette:.35, grain:.12, grainSize:1.2, leak:true },
+  { id:'portra400', name:'Portra 400', short:'P400', cat:'Color negative · ISO 400', accent:'#E8A87C', label:'KODAK PORTRA 400',
+    exposure:.15, contrast:.95, sat:.92, wb:[1.04,1,.94], black:[.05,.045,.045], white:[.98,.96,.92], shadow:[-.005,0,.01], high:[.02,.01,-.01], vignette:.25, grain:.05 },
+  { id:'classic-neg', name:'Classic Neg', short:'NEG', cat:'Fuji recipe', accent:'#6E9C86', label:'CLASSIC NEGATIVE',
+    contrast:1.25, sat:.85, wb:[1,1,.98], black:[.04,.05,.05], white:[.96,.95,.88], shadow:[-.02,.01,.02], high:[.03,.01,-.02], vignette:.3, grain:.07 },
+  { id:'kodachrome64', name:'Kodachrome 64', short:'K64', cat:'Slide · ISO 64', accent:'#D83A2F', label:'KODACHROME 64',
+    contrast:1.3, sat:1.2, wb:[1.03,1,.94], black:[.02,.02,.03], shadow:[0,0,.02], high:[.03,0,-.02], vignette:.35, grain:.04 },
+  { id:'cinestill800t', name:'Cinestill 800T', short:'800T', cat:'Tungsten · halation', accent:'#E0453A', label:'CINESTILL 800T',
+    contrast:1.15, sat:1.05, wb:[.88,.97,1.12], black:[.03,.04,.06], shadow:[-.02,0,.03], high:[.03,0,-.01], hal:.55, vignette:.35, grain:.12, grainSize:1.2 },
+  { id:'industrial100', name:'Industrial 100', short:'100', cat:'Fujicolor · ISO 100', accent:'#2E86AB', label:'FUJICOLOR INDUSTRIAL',
+    contrast:1.1, sat:1.15, wb:[.98,1.03,.98], shadow:[-.01,.02,.01], high:[0,.01,0], vignette:.3, grain:.05 },
+  { id:'velvia', name:'Velvia 50', short:'V50', cat:'Slide · vivid', accent:'#9B59B6', label:'FUJI VELVIA',
+    exposure:-.05, contrast:1.3, sat:1.45, black:[.01,.01,.02], shadow:[0,0,.02], high:[.01,0,0], vignette:.3, grain:.03 },
+  { id:'trix400', name:'Tri-X 400', short:'TX', cat:'B&W · ISO 400', accent:'#F1C40F', label:'KODAK TRI-X 400',
+    bw:1, mix:[.36,.52,.12], contrast:1.35, black:[.03,.03,.03], white:[.97,.97,.97], vignette:.4, grain:.13, grainSize:1.3 },
+  { id:'ilfordhp5', name:'Ilford HP5', short:'HP5', cat:'B&W · ISO 400', accent:'#E6E6E6', label:'ILFORD HP5',
+    bw:1, mix:[.30,.59,.11], exposure:.05, contrast:1.15, black:[.05,.05,.05], white:[.96,.96,.96], vignette:.3, grain:.11, grainSize:1.3 },
+  { id:'moody-amber', name:'Moody Amber', short:'AMB', cat:'Moody', accent:'#D4892A', label:'MOODY AMBER',
+    exposure:-.15, contrast:1.25, sat:.8, wb:[1.08,1,.82], black:[.04,.03,.02], white:[.96,.9,.78], shadow:[.01,0,-.01], high:[.04,.02,-.03], vignette:.6, grain:.1 },
+  { id:'faded-teal', name:'Faded Teal', short:'MIST', cat:'Moody · bloom', accent:'#4FA3A0', label:'FADED TEAL',
+    exposure:.1, contrast:.85, sat:.75, black:[.10,.16,.16], white:[.94,.97,.95], shadow:[-.02,.02,.02], high:[.01,.02,0], bloom:.25, vignette:.2, grain:.06 },
+  { id:'dark-cyan', name:'Dark Cyan', short:'OCN', cat:'Moody', accent:'#1F7FA0', label:'DARK CYAN',
+    exposure:-.2, contrast:1.35, sat:.85, wb:[.9,1,1.08], black:[.01,.04,.06], shadow:[-.03,.01,.04], high:[0,.02,.02], vignette:.6, grain:.1 },
+  { id:'hard-flash', name:'Direct Flash', short:'FLSH', cat:'Night · on-camera flash', accent:'#FFFFFF', label:'DIRECT FLASH',
+    exposure:.1, contrast:1.3, sat:1.15, wb:[1.04,1,.94], flash:1, vignette:.5, grain:.12 },
+  { id:'ig-90s', name:'90s Dreams', short:'90s', cat:'Social', accent:'#E1306C', label:'90s DREAMS',
+    exposure:.15, contrast:.92, sat:1.2, wb:[1.04,.98,1.02], black:[.06,.04,.08], shadow:[.01,0,.02], high:[.03,0,.02], bloom:.35, vignette:.25, grain:.07, leak:true },
+  { id:'ig-filmgrade', name:'Film Grade', short:'FG', cat:'Social · matte', accent:'#B08A62', label:'FILM GRADE',
+    contrast:.95, sat:.75, black:[.12,.12,.14], white:[.94,.93,.9], shadow:[-.01,0,.02], high:[.02,.01,-.01], vignette:.3, grain:.1 },
+  { id:'ig-cinematic', name:'Cinematic', short:'CINE', cat:'Social · teal & orange', accent:'#FF7A00', label:'CINEMATIC',
+    contrast:1.25, sat:1.1, black:[.02,.04,.05], shadow:[-.04,.01,.05], high:[.05,.02,-.04], vignette:.45, grain:.1 },
+].map(f => Object.assign({}, BASE, f));
 
-        async function initCamera() {
-            try {
-                if (video.srcObject) video.srcObject.getTracks().forEach(track => track.stop());
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: currentFacingMode, width: { ideal: 1920 } } });
-                video.srcObject = stream;
-                video.style.filter = getCssFilterString(recipeSelect.value);
-            } catch (err) { alert("Izinkan akses kamera di browser Anda."); }
-        }
-        initCamera();
+/* =====================================================================
+   WEBGL FILM RENDERER
+   ===================================================================== */
+const VS = `attribute vec2 p; varying vec2 v;
+void main(){ v = vec2(p.x*.5+.5, .5-p.y*.5); gl_Position = vec4(p,0.,1.); }`;
 
-        flashBtn.addEventListener('click', () => { isFlashOn = !isFlashOn; flashBtn.classList.toggle('active-state', isFlashOn); });
-        frameBtn.addEventListener('click', () => { isFrameOn = !isFrameOn; frameBtn.classList.toggle('active-state', isFrameOn); viewfinder.classList.toggle('frame-mode', isFrameOn); });
-        flipBtn.addEventListener('click', () => { currentFacingMode = currentFacingMode === "user" ? "environment" : "user"; initCamera(); video.style.transform = currentFacingMode === "user" ? "scaleX(-1)" : "scaleX(1)"; });
+const FS = `
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+varying vec2 v;
+uniform sampler2D uTex;
+uniform vec2 uCropOff, uCropScale, uRes;
+uniform float uMirror, uExposure, uContrast, uSat, uBW, uVignette, uGrain, uGrainSize, uBloom, uHal, uFlash, uSeed;
+uniform vec3 uWB, uMix, uBlack, uWhite, uShadow, uHigh, uHalColor;
 
-        document.getElementById('open-gallery-btn').addEventListener('click', () => galleryOverlay.classList.add('open'));
-        document.getElementById('close-gallery-btn').addEventListener('click', () => { galleryOverlay.classList.remove('open'); resetSelectionMode(); });
-        document.getElementById('close-viewer-btn').addEventListener('click', () => photoViewerOverlay.classList.remove('open'));
+vec2 toTex(vec2 q){ q.x = mix(q.x, 1.-q.x, uMirror); return uCropOff + clamp(q,0.,1.)*uCropScale; }
+float luma(vec3 c){ return dot(c, vec3(.2126,.7152,.0722)); }
+float hash(vec2 p){ vec3 p3 = fract(vec3(p.xyx)*.1031); p3 += dot(p3, p3.yzx+33.33); return fract((p3.x+p3.y)*p3.z); }
+float vnoise(vec2 p){
+  vec2 i = floor(p), f = fract(p); f = f*f*(3.-2.*f);
+  return mix(mix(hash(i), hash(i+vec2(1,0)), f.x), mix(hash(i+vec2(0,1)), hash(i+vec2(1,1)), f.x), f.y);
+}
+// Smooth, continuous S-curve (no hard thresholds -> no posterisation)
+vec3 curve(vec3 x, float k){
+  vec3 lo = .5*pow(2.*x, vec3(k));
+  vec3 hi = 1.-.5*pow(2.*(1.-x), vec3(k));
+  return mix(lo, hi, step(.5, x));
+}
+vec3 blur(vec2 q){
+  vec3 s = vec3(0.);
+  vec2 asp = vec2(1., uRes.x/uRes.y);
+  for (int i = 0; i < 16; i++) {
+    float fi = float(i);
+    float a = fi*2.39996;
+    float r = sqrt((fi+.5)/16.)*.03;
+    s += texture2D(uTex, toTex(q + vec2(cos(a), sin(a))*r*asp)).rgb;
+  }
+  return s/16.;
+}
+void main(){
+  vec2 q = v;
+  vec3 c = texture2D(uTex, toTex(q)).rgb;
+  float ar = uRes.x/uRes.y;
+  float d = length((q-.5)*vec2(ar,1.)) / length(vec2(ar,1.)*.5); // 0 centre .. 1 corner
 
-        function resetSelectionMode() {
-            isSelectMode = false; selectModeBtn.innerText = "Select"; selectedPhotos.clear();
-            updateMultiUI(); document.querySelectorAll('.gallery-item').forEach(el => el.classList.remove('selected'));
-        }
+  float ev = uExposure + uFlash*(.55*(1.-smoothstep(0.,.8,d)) - .25);
+  vec3 gain = exp2(ev)*uWB;
+  c *= gain;
 
-        selectModeBtn.addEventListener('click', () => {
-            isSelectMode = !isSelectMode;
-            selectModeBtn.innerText = isSelectMode ? "Cancel" : "Select";
-            if(!isSelectMode) resetSelectionMode();
-            updateMultiUI();
-        });
+  if (uBloom > 0. || uHal > 0.) {
+    vec3 b = clamp(blur(q)*gain, 0., 1.);
+    c = 1. - (1.-clamp(c,0.,1.))*(1. - b*uBloom);
+    c += uHalColor * smoothstep(.55, .95, luma(b)) * uHal;
+  }
+  c = clamp(c, 0., 1.);
 
-        function updateMultiUI() {
-            selectCountText.innerText = selectedPhotos.size;
-            libraryActions.classList.toggle('show', isSelectMode && selectedPhotos.size > 0);
-        }
+  float l = luma(c);
+  c = clamp(mix(vec3(l), c, uSat), 0., 1.);
+  if (uBW > .5) c = vec3(clamp(dot(c, uMix), 0., 1.));
 
-        function handleGalleryItemClick(e, url, itemDiv) {
-            if (isSelectMode) {
-                if (selectedPhotos.has(url)) { selectedPhotos.delete(url); itemDiv.classList.remove('selected'); } 
-                else { selectedPhotos.add(url); itemDiv.classList.add('selected'); }
-                updateMultiUI();
-            } else {
-                currentPhotoDataUrl = url; viewedPhoto.src = url;
-                photoViewerOverlay.classList.add('open');
-            }
-        }
+  c = curve(c, uContrast + uFlash*.2);
+  c = mix(uBlack, uWhite, c);
 
-        async function dataUrlToFile(dataUrl, filename) {
-            const res = await fetch(dataUrl); const blob = await res.blob();
-            return new File([blob], filename, { type: 'image/jpeg' });
-        }
+  l = luma(c);
+  c += uShadow*(1.-smoothstep(0.,.55,l)) + uHigh*smoothstep(.45,1.,l);
 
-        singleShareBtn.addEventListener('click', async () => {
-            if (!navigator.share) { alert("Tekan lama pada foto lalu pilih Save Image"); return; }
-            try { const file = await dataUrlToFile(currentPhotoDataUrl, `dispo_${Date.now()}.jpg`); await navigator.share({ files: [file] }); } catch (err) {}
-        });
+  c *= 1. - (uVignette + uFlash*.2)*smoothstep(.35, 1.1, d);
 
-        multiShareBtn.addEventListener('click', async () => {
-            if (selectedPhotos.size === 0) return;
-            if (!navigator.share) {
-                let delay = 0;
-                selectedPhotos.forEach(url => {
-                    setTimeout(() => { const a = document.createElement('a'); a.href = url; a.download = `dispo_${Date.now()}.jpg`; a.click(); }, delay); delay += 300;
-                });
-                resetSelectionMode(); return;
-            }
-            try {
-                const filePromises = Array.from(selectedPhotos).map((url, i) => dataUrlToFile(url, `dispo_${Date.now()}_${i}.jpg`));
-                const files = await Promise.all(filePromises);
-                if (navigator.canShare && navigator.canShare({ files })) { await navigator.share({ files: files }); resetSelectionMode(); } 
-                else alert("Tidak dapat membagikan banyak file sekaligus.");
-            } catch (err) {}
-        });
+  if (uGrain > 0.) {
+    vec2 gp = gl_FragCoord.xy/uGrainSize + uSeed;
+    float n = (vnoise(gp) + vnoise(gp*1.93 + 17.3) - 1.);       // luminance grain, ~[-1,1]
+    l = luma(c);
+    float w = 1. - .65*pow(abs(l-.5)*2., 2.);                  // strongest in mid-tones
+    vec3 g = vec3(n);
+    if (uBW < .5) g += .25*vec3(vnoise(gp+41.7)-.5, vnoise(gp+7.1)-.5, vnoise(gp+93.3)-.5);
+    c += g*uGrain*w;
+  }
+  gl_FragColor = vec4(clamp(c, 0., 1.), 1.);
+}`;
 
-        function roundRect(ctx, x, y, width, height, radius) {
-            ctx.beginPath(); ctx.moveTo(x + radius, y); ctx.lineTo(x + width - radius, y);
-            ctx.quadraticCurveTo(x + width, y, x + width, y + radius); ctx.lineTo(x + width, y + height - radius);
-            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height); ctx.lineTo(x + radius, y + height);
-            ctx.quadraticCurveTo(x, y + height, x, y + height - radius); ctx.lineTo(x, y + radius);
-            ctx.quadraticCurveTo(x, y, x + radius, y); ctx.closePath();
-        }
+const UNIFORMS = ['uTex','uCropOff','uCropScale','uRes','uMirror','uExposure','uContrast','uSat','uBW','uVignette','uGrain','uGrainSize','uBloom','uHal','uFlash','uSeed','uWB','uMix','uBlack','uWhite','uShadow','uHigh','uHalColor'];
 
-        snapBtn.addEventListener('click', () => {
-            screenFlash.style.transition = 'none'; screenFlash.style.opacity = '1';
-            setTimeout(() => { screenFlash.style.transition = 'opacity 0.6s ease-out'; screenFlash.style.opacity = '0'; }, 50);
+class FilmRenderer {
+  constructor(canvas, preserve) {
+    const opts = { alpha: false, antialias: false, premultipliedAlpha: false, preserveDrawingBuffer: !!preserve };
+    const gl = canvas.getContext('webgl', opts) || canvas.getContext('experimental-webgl', opts);
+    if (!gl) throw new Error('WebGL unavailable');
+    this.gl = gl; this.canvas = canvas;
+    const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s; };
+    const prog = gl.createProgram();
+    gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS));
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+    gl.useProgram(prog);
+    const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    this.u = {}; UNIFORMS.forEach(n => this.u[n] = gl.getUniformLocation(prog, n));
+    this.tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, this.tex);
+    [[gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE], [gl.TEXTURE_MIN_FILTER, gl.LINEAR], [gl.TEXTURE_MAG_FILTER, gl.LINEAR]]
+      .forEach(([k, val]) => gl.texParameteri(gl.TEXTURE_2D, k, val));
+    gl.uniform1i(this.u.uTex, 0);
+  }
+  render(source, o) {
+    const { gl, u } = this, f = o.film;
+    if (this.canvas.width !== o.width || this.canvas.height !== o.height) { this.canvas.width = o.width; this.canvas.height = o.height; }
+    gl.viewport(0, 0, o.width, o.height);
+    gl.bindTexture(gl.TEXTURE_2D, this.tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, source);
+    gl.uniform2f(u.uCropOff, o.crop.x, o.crop.y); gl.uniform2f(u.uCropScale, o.crop.w, o.crop.h);
+    gl.uniform2f(u.uRes, o.width, o.height);
+    gl.uniform1f(u.uMirror, o.mirror ? 1 : 0);
+    gl.uniform1f(u.uExposure, f.exposure); gl.uniform1f(u.uContrast, f.contrast); gl.uniform1f(u.uSat, f.sat);
+    gl.uniform1f(u.uBW, f.bw); gl.uniform1f(u.uVignette, f.vignette); gl.uniform1f(u.uGrain, f.grain);
+    gl.uniform1f(u.uGrainSize, Math.max(1, o.width / 900) * f.grainSize);
+    gl.uniform1f(u.uBloom, f.bloom); gl.uniform1f(u.uHal, f.hal);
+    gl.uniform1f(u.uFlash, Math.max(f.flash, o.flash ? .7 : 0)); gl.uniform1f(u.uSeed, o.seed);
+    gl.uniform3fv(u.uWB, f.wb); gl.uniform3fv(u.uMix, f.mix); gl.uniform3fv(u.uBlack, f.black); gl.uniform3fv(u.uWhite, f.white);
+    gl.uniform3fv(u.uShadow, f.shadow); gl.uniform3fv(u.uHigh, f.high); gl.uniform3fv(u.uHalColor, f.halColor);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  }
+}
 
-            const recipe = recipeSelect.value;
-            const recipeText = brandTitle.innerText;
+/* =====================================================================
+   STORAGE (IndexedDB, falls back to memory)
+   ===================================================================== */
+const store = {
+  db: null,
+  open() {
+    if (this.db) return Promise.resolve(this.db);
+    return new Promise((res, rej) => {
+      const r = indexedDB.open('dispocam', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('photos', { keyPath: 'id' });
+      r.onsuccess = () => res(this.db = r.result);
+      r.onerror = () => rej(r.error);
+    });
+  },
+  async run(mode, fn) {
+    try {
+      const db = await this.open();
+      return await new Promise((res, rej) => {
+        const t = db.transaction('photos', mode); const req = fn(t.objectStore('photos'));
+        t.oncomplete = () => res(req && req.result); t.onerror = () => rej(t.error);
+      });
+    } catch (e) { console.warn('storage', e); return null; }
+  },
+  all() { return this.run('readonly', s => s.getAll()); },
+  put(p) { return this.run('readwrite', s => s.put(p)); },
+  del(id) { return this.run('readwrite', s => s.delete(id)); },
+};
 
-            const targetRatio = 3/4;
-            let sWidth = video.videoWidth;
-            let sHeight = video.videoHeight;
-            let sX = 0, sY = 0;
-            
-            const vRatio = sWidth / sHeight;
-            if (vRatio > targetRatio) { sWidth = sHeight * targetRatio; sX = (video.videoWidth - sWidth) / 2; } 
-            else { sHeight = sWidth / targetRatio; sY = (video.videoHeight - sHeight) / 2; }
+/* =====================================================================
+   APP STATE & ELEMENTS
+   ===================================================================== */
+const $ = id => document.getElementById(id);
+const video = $('video'), preview = $('preview'), vf = $('vf');
+const prefs = Object.assign({ film: 'dispo', flash: false, date: true, frame: true, round: false, facing: 'environment' },
+  JSON.parse(localStorage.getItem('dispocam-prefs') || '{}'));
+const savePrefs = () => localStorage.setItem('dispocam-prefs', JSON.stringify(prefs));
+let film = FILMS.find(f => f.id === prefs.film) || FILMS[0];
+let stream = null, torchOK = false, busy = false;
+let photos = [];                    // newest first: {id, blob, url, film, created}
+let previewR = null, captureR = null;
 
-            const vw = 1200; const vh = vw / targetRatio; 
-            let padX = isFrameOn ? vw * 0.05 : 0;
-            let padYTop = padX;
-            let padYBot = isFrameOn ? vw * 0.22 : 0;
-            const cornerRadius = isRoundOn ? (vw * 0.05) : 0; 
+const fmtDate = (d = new Date()) => `'${String(d.getFullYear()).slice(2)} ${String(d.getMonth()+1).padStart(2,'0')} ${String(d.getDate()).padStart(2,'0')}`;
+const vibrate = ms => navigator.vibrate && navigator.vibrate(ms);
 
-            canvas.width = vw + (padX * 2);
-            canvas.height = vh + padYTop + padYBot;
+/* ---------- Film strip ---------- */
+const inkFor = hex => { const n = parseInt(hex.slice(1), 16); const r = n >> 16, g = n >> 8 & 255, b = n & 255;
+  return (r*.299 + g*.587 + b*.114) > 150 ? '#0b0b0c' : '#ffffff'; };
+const strip = $('strip');
+FILMS.forEach(f => {
+  const b = document.createElement('button'); b.className = 'film'; b.dataset.id = f.id;
+  b.innerHTML = `<div class="can" style="background:${f.accent};color:${inkFor(f.accent)}">${f.short}</div><div class="film-name">${f.name}</div>`;
+  b.addEventListener('click', () => setFilm(f, true));
+  strip.appendChild(b);
+});
 
-            // --- RENDER BINGKAI KERTAS ---
-            if (isFrameOn) {
-                ctx.fillStyle = '#f7f6f2'; // Warm white paper
-                if (isRoundOn) { roundRect(ctx, 0, 0, canvas.width, canvas.height, cornerRadius * 1.5); ctx.fill(); } 
-                else ctx.fillRect(0, 0, canvas.width, canvas.height);
-                
-                // Texture noise untuk kertas bingkai
-                ctx.fillStyle = 'rgba(0,0,0,0.03)';
-                for(let i=0; i<3000; i++) {
-                    ctx.fillRect(Math.random()*canvas.width, Math.random()*canvas.height, 2, 2);
-                }
-                
-                ctx.fillStyle = '#888'; ctx.font = `bold ${canvas.width * 0.035}px 'Oswald', sans-serif`;
-                ctx.textAlign = 'center'; ctx.fillText(recipeText, canvas.width / 2, canvas.height - (padYBot / 2.5));
-            }
+let toastT;
+function toast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 1100); }
 
-            ctx.save(); 
-            if (isRoundOn) roundRect(ctx, padX, padYTop, vw, vh, cornerRadius);
-            else { ctx.beginPath(); ctx.rect(padX, padYTop, vw, vh); }
-            ctx.clip(); 
+function setFilm(f, scroll, showToast) {
+  film = f; prefs.film = f.id; savePrefs();
+  document.documentElement.style.setProperty('--accent', f.accent);
+  document.documentElement.style.setProperty('--accent-ink', inkFor(f.accent));
+  $('brand-name').textContent = f.name; $('brand-sub').textContent = f.cat;
+  $('frame-label').textContent = f.label;
+  vf.classList.toggle('bw', !!f.bw);
+  strip.querySelectorAll('.film').forEach(el => el.classList.toggle('on', el.dataset.id === f.id));
+  if (scroll) { const el = strip.querySelector(`[data-id="${f.id}"]`); el && el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }); }
+  if (showToast) toast(f.name.toUpperCase());
+}
+const stepFilm = dir => { const i = FILMS.indexOf(film); setFilm(FILMS[(i + dir + FILMS.length) % FILMS.length], true, true); vibrate(8); };
 
-            if (currentFacingMode === "user") { ctx.translate(canvas.width, 0); ctx.scale(-1, 1); }
+/* ---------- Toggles ---------- */
+function applyToggles() {
+  $('flash-btn').classList.toggle('on', prefs.flash);
+  $('date-btn').classList.toggle('on', prefs.date);
+  $('frame-btn').classList.toggle('on', prefs.frame);
+  $('round-btn').classList.toggle('on', prefs.round);
+  vf.classList.toggle('framed', prefs.frame);
+  vf.classList.toggle('rounded', prefs.round);
+  vf.classList.toggle('nodate', !prefs.date);
+  // Frame output: width 1.10w, height (4/3 + .05 + .22)w  ->  same proportions as the saved file
+  document.documentElement.style.setProperty('--vf-ratio', prefs.frame ? (1.1 / (4/3 + .27)).toFixed(5) : '0.75');
+}
+[['flash-btn','flash','Flash'], ['date-btn','date','Tanggal'], ['frame-btn','frame','Bingkai'], ['round-btn','round','Sudut bulat']].forEach(([id, key, label]) => {
+  $(id).addEventListener('click', () => { prefs[key] = !prefs[key]; savePrefs(); applyToggles(); toast(`${label.toUpperCase()} ${prefs[key] ? 'ON' : 'OFF'}`); vibrate(6); });
+});
 
-            ctx.filter = getCssFilterString(recipe);
-            ctx.drawImage(video, sX, sY, sWidth, sHeight, padX, padYTop, vw, vh);
+/* ---------- Camera ---------- */
+function showMsg(text) { $('vf-msg-text').textContent = text; $('vf-msg').classList.add('show'); }
+async function initCamera() {
+  $('vf-msg').classList.remove('show');
+  if (stream) stream.getTracks().forEach(t => t.stop());
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { showMsg('Browser ini tidak mendukung kamera. Buka lewat HTTPS di Safari / Chrome.'); return; }
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: prefs.facing, width: { ideal: 1920 }, height: { ideal: 1440 } } });
+    video.srcObject = stream;
+    await video.play().catch(() => {});
+    const track = stream.getVideoTracks()[0];
+    const caps = track.getCapabilities ? track.getCapabilities() : {};
+    torchOK = !!caps.torch;
+  } catch (err) {
+    showMsg(err && err.name === 'NotAllowedError' ? 'Akses kamera ditolak. Izinkan kamera di pengaturan browser lalu coba lagi.' : 'Kamera tidak bisa dibuka. Pastikan tidak sedang dipakai aplikasi lain.');
+  }
+}
+$('retry-btn').addEventListener('click', initCamera);
+$('flip-btn').addEventListener('click', e => {
+  prefs.facing = prefs.facing === 'user' ? 'environment' : 'user'; savePrefs();
+  e.currentTarget.classList.toggle('spin'); initCamera();
+});
 
-            // IG 90s Dreams / Faded Teal Bloom (Mist Effect)
-            if (recipe === 'ig-90s' || recipe === 'faded-teal') {
-                ctx.globalAlpha = 0.35; 
-                ctx.filter = recipe === 'faded-teal' ? 'blur(10px) brightness(1.2)' : 'blur(15px) brightness(1.3)';
-                ctx.drawImage(video, sX, sY, sWidth, sHeight, padX, padYTop, vw, vh);
-                ctx.globalAlpha = 1.0; ctx.filter = 'none';
-            }
+function cropFor(vw, vh) {   // centred 3:4 cover crop, in texture UV
+  const target = 3/4, r = vw / vh;
+  return r > target ? { x: (1 - target/r)/2, y: 0, w: target/r, h: 1 } : { x: 0, y: (1 - r/target)/2, w: 1, h: r/target };
+}
 
-            ctx.restore(); 
-            
-            // --- OVERLAYS PADA FOTO ---
-            ctx.save(); 
-            if (isRoundOn) roundRect(ctx, padX, padYTop, vw, vh, cornerRadius);
-            else { ctx.beginPath(); ctx.rect(padX, padYTop, vw, vh); }
-            ctx.clip(); 
+/* ---------- Live preview loop ---------- */
+try { previewR = new FilmRenderer(preview, false); }
+catch (e) { showMsg('Perangkat ini tidak mendukung WebGL, filter tidak bisa dijalankan.'); }
 
-            // VIGNETTE KHUSUS
-            const cx = padX + vw / 2; const cy = padYTop + vh / 2; const r = Math.max(vw, vh);
-            const vignette = ctx.createRadialGradient(cx, cy, r * 0.1, cx, cy, r * 0.85);
-            
-            if (recipe === 'hard-flash' || recipe === 'ig-flash' || isFlashOn) {
-                vignette.addColorStop(0, 'rgba(255,255,255,0.15)'); 
-                vignette.addColorStop(0.3, 'rgba(0,0,0,0)');
-                vignette.addColorStop(0.6, 'rgba(0,0,0,0.7)'); 
-                vignette.addColorStop(1, 'rgba(0,0,0,0.95)'); 
-            } else if (recipe === 'dark-cyan' || recipe === 'moody-amber') {
-                vignette.addColorStop(0, 'rgba(0,0,0,0)'); 
-                vignette.addColorStop(1, 'rgba(0,0,0,0.7)'); // Stronger moody vignette
-            } else {
-                vignette.addColorStop(0, 'rgba(0,0,0,0)'); 
-                vignette.addColorStop(1, 'rgba(0,0,0,0.5)');
-            }
-            ctx.fillStyle = vignette; ctx.fillRect(padX, padYTop, vw, vh);
+let frameN = 0, seed = 0;
+function loop() {
+  requestAnimationFrame(loop);
+  if (!previewR || video.readyState < 2 || !video.videoWidth) return;
+  const dpr = Math.min(window.devicePixelRatio || 1, 3);
+  const w = Math.min(1080, Math.round(preview.clientWidth * dpr)), h = Math.round(w * 4/3);
+  if (!w) return;
+  if (frameN++ % 3 === 0) seed = Math.random() * 100;   // grain refreshes ~20fps, like projected film
+  previewR.render(video, { width: w, height: h, film, crop: cropFor(video.videoWidth, video.videoHeight), mirror: prefs.facing === 'user', flash: prefs.flash, seed });
+}
+requestAnimationFrame(loop);
 
-            // COLOR GRADING MODES (Faded & Cinematic)
-            if (recipe === 'ig-filmgrade' || recipe === 'faded-teal') {
-                ctx.globalCompositeOperation = 'lighten'; 
-                // Hitam diangkat menjadi abu-abu hijau/biru (Faded/Matte Shadows)
-                ctx.fillStyle = recipe === 'faded-teal' ? 'rgba(25, 45, 45, 1)' : 'rgba(35, 40, 50, 1)';
-                ctx.fillRect(padX, padYTop, vw, vh); ctx.globalCompositeOperation = 'source-over';
-            }
-            
-            if (recipe === 'ig-cinematic' || recipe === 'dark-cyan') {
-                ctx.globalCompositeOperation = 'multiply'; 
-                ctx.fillStyle = recipe === 'dark-cyan' ? 'rgba(0, 30, 50, 0.4)' : 'rgba(0, 60, 100, 0.4)'; 
-                ctx.fillRect(padX, padYTop, vw, vh);
-                
-                ctx.globalCompositeOperation = 'screen'; 
-                ctx.fillStyle = recipe === 'dark-cyan' ? 'rgba(0, 100, 120, 0.2)' : 'rgba(255, 120, 0, 0.15)'; 
-                ctx.fillRect(padX, padYTop, vw, vh);
-                ctx.globalCompositeOperation = 'source-over';
-            }
+/* ---------- Swipe viewfinder to change film ---------- */
+(() => {
+  let x0 = null, y0 = 0;
+  vf.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+  vf.addEventListener('touchend', e => {
+    if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) stepFilm(dx < 0 ? 1 : -1);
+  });
+})();
+document.addEventListener('keydown', e => {
+  if ($('library').classList.contains('open') || $('viewer').classList.contains('open')) {
+    if (e.key === 'Escape') closeTop();
+    if ($('viewer').classList.contains('open') && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) stepViewer(e.key === 'ArrowRight' ? 1 : -1);
+    return;
+  }
+  if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); capture(); }
+  if (e.key === 'ArrowRight') stepFilm(1);
+  if (e.key === 'ArrowLeft') stepFilm(-1);
+});
 
-            if (recipe === 'moody-amber') {
-                // Crushed dark warm shadows
-                ctx.globalCompositeOperation = 'multiply'; ctx.fillStyle = 'rgba(30, 15, 0, 0.3)'; ctx.fillRect(padX, padYTop, vw, vh);
-                ctx.globalCompositeOperation = 'source-over';
-            }
+/* =====================================================================
+   CAPTURE
+   ===================================================================== */
+let paperPattern = null;
+function getPaperPattern(ctx) {
+  if (paperPattern) return paperPattern;
+  const c = document.createElement('canvas'); c.width = c.height = 256; const x = c.getContext('2d');
+  const img = x.createImageData(256, 256);
+  for (let i = 0; i < img.data.length; i += 4) { const n = 236 + Math.random() * 14; img.data[i] = n + 4; img.data[i+1] = n + 3; img.data[i+2] = n; img.data[i+3] = 255; }
+  x.putImageData(img, 0, 0);
+  return paperPattern = ctx.createPattern(c, 'repeat');
+}
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+}
+const wait = ms => new Promise(r => setTimeout(r, ms));
+const fontsReady = Promise.race([
+  Promise.all([document.fonts.load('700 40px Oswald'), document.fonts.load('40px VT323')]).catch(() => {}), wait(2500)
+]);
 
-            // STANDARD OVERLAYS
-            ctx.globalCompositeOperation = 'overlay';
-            if (recipe === 'hard-flash') ctx.fillStyle = 'rgba(255, 150, 50, 0.12)'; 
-            else if (recipe === 'moody-amber') ctx.fillStyle = 'rgba(255, 160, 50, 0.2)'; // Amber highlight
-            else if (recipe === 'faded-teal') ctx.fillStyle = 'rgba(150, 200, 150, 0.1)'; 
-            else if (recipe === 'kodak-gold') ctx.fillStyle = 'rgba(255, 180, 0, 0.15)';
-            else if (recipe === 'superia') ctx.fillStyle = 'rgba(0, 180, 120, 0.15)';
-            else if (recipe === 'classic-neg') ctx.fillStyle = 'rgba(0, 150, 50, 0.1)';
-            else if (recipe === 'kodachrome64') ctx.fillStyle = 'rgba(255, 50, 0, 0.1)';
-            else if (recipe === 'portra400') ctx.fillStyle = 'rgba(255, 210, 140, 0.12)'; 
-            else if (recipe === 'cinestill800t') ctx.fillStyle = 'rgba(0, 100, 200, 0.15)'; 
-            else if (recipe === 'industrial100') ctx.fillStyle = 'rgba(0, 255, 150, 0.05)'; 
-            else if (recipe === 'velvia') ctx.fillStyle = 'rgba(255, 50, 150, 0.05)'; 
-            else if (recipe === 'ig-90s') ctx.fillStyle = 'rgba(255, 100, 180, 0.2)'; 
-            else if (recipe !== 'trix400' && recipe !== 'ilfordhp5' && !recipe.startsWith('ig-')) ctx.fillStyle = 'rgba(57, 255, 20, 0.05)'; 
-            
-            ctx.fillRect(padX, padYTop, vw, vh);
-            ctx.globalCompositeOperation = 'source-over';
+async function capture() {
+  if (busy || !video.videoWidth || !previewR) return;
+  busy = true; $('shutter').classList.add('busy'); vibrate(15);
+  const blink = $('blink'); const isFront = prefs.facing === 'user';
+  const useFlash = prefs.flash || film.flash > 0;
+  const track = stream && stream.getVideoTracks()[0];
 
-            // Light Leaks
-            if (recipe !== 'trix400' && recipe !== 'ilfordhp5' && Math.random() > 0.7) {
-                const leak = ctx.createLinearGradient(padX, padYTop, padX + (vw * 0.3), padYTop);
-                const leakColor = recipe === 'cinestill800t' ? 'rgba(255, 20, 20, 0.5)' : 'rgba(255, 50, 0, 0.4)';
-                leak.addColorStop(0, leakColor); leak.addColorStop(1, 'rgba(255, 50, 0, 0)');
-                ctx.fillStyle = leak; ctx.globalCompositeOperation = 'screen'; ctx.fillRect(padX, padYTop, vw, vh); ctx.globalCompositeOperation = 'source-over';
-            }
+  try {
+    // Real light where possible: torch on rear camera, white screen on front camera
+    if (useFlash && isFront) { blink.style.transition = 'none'; blink.style.opacity = '1'; await wait(220); }
+    else if (useFlash && torchOK && track) { await track.applyConstraints({ advanced: [{ torch: true }] }).catch(() => {}); await wait(450); }
 
-            // ANALOG GRAIN
-            const heavyGrain = ['hard-flash', 'moody-amber', 'dark-cyan', 'trix400', 'ilfordhp5', 'cinestill800t', 'ig-filmgrade', 'ig-cinematic'];
-            const lightGrain = ['faded-teal', 'portra400', 'superia', 'ig-90s'];
-            
-            const imgData = ctx.getImageData(padX, padYTop, vw, vh);
-            const isBW = (recipe === 'trix400' || recipe === 'ilfordhp5');
-            const noiseIntensity = heavyGrain.includes(recipe) ? 45 : (lightGrain.includes(recipe) ? 20 : 0);
-            
-            for(let i=0; i < imgData.data.length; i+=4) {
-                if (isBW) {
-                    const avg = (imgData.data[i] + imgData.data[i+1] + imgData.data[i+2]) / 3;
-                    const bwFinal = avg < 128 ? avg * 0.8 : Math.min(255, avg * 1.2); 
-                    imgData.data[i] = bwFinal; imgData.data[i+1] = bwFinal; imgData.data[i+2] = bwFinal;
-                }
-                if (noiseIntensity > 0) {
-                    let noise = (Math.random() - 0.5) * noiseIntensity;
-                    imgData.data[i] = Math.min(255, Math.max(0, imgData.data[i] + noise));
-                    imgData.data[i+1] = Math.min(255, Math.max(0, imgData.data[i+1] + noise));
-                    imgData.data[i+2] = Math.min(255, Math.max(0, imgData.data[i+2] + noise));
-                }
-            }
-            ctx.putImageData(imgData, padX, padYTop);
+    const crop = cropFor(video.videoWidth, video.videoHeight);
+    const w = Math.round(Math.min(1440, Math.max(900, video.videoWidth * crop.w))), h = Math.round(w * 4/3);
+    if (!captureR) captureR = new FilmRenderer(document.createElement('canvas'), true);
+    captureR.render(video, { width: w, height: h, film, crop, mirror: isFront, flash: prefs.flash, seed: Math.random() * 100 });
 
-            if (isFrameOn) {
-                ctx.strokeStyle = 'rgba(0,0,0,0.15)'; ctx.lineWidth = 4;
-                if (isRoundOn) { roundRect(ctx, padX, padYTop, vw, vh, cornerRadius); ctx.stroke(); } 
-                else ctx.strokeRect(padX, padYTop, vw, vh);
-            }
+    if (useFlash && torchOK && track && !isFront) track.applyConstraints({ advanced: [{ torch: false }] }).catch(() => {});
+    blink.style.transition = 'none'; blink.style.opacity = '1';
+    requestAnimationFrame(() => { blink.style.transition = 'opacity .55s ease-out'; blink.style.opacity = '0'; });
 
-            // Date Stamp
-            ctx.font = `normal ${vh * 0.045}px "VT323", monospace`;
-            ctx.fillStyle = isBW ? '#ffffff' : '#ff7b00'; 
-            ctx.textAlign = 'right';
-            ctx.shadowColor = isBW ? 'rgba(0,0,0,0.8)' : 'rgba(255,94,0,0.8)'; 
-            ctx.shadowBlur = 6; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 2;
-            const dateOffset = isRoundOn ? (cornerRadius / 2) : 0;
-            ctx.fillText(`'26 10 29`, padX + vw - (vw * 0.05) - dateOffset, padYTop + vh - (vh * 0.05) - dateOffset);
-            ctx.shadowBlur = 0;
-            ctx.restore(); 
+    await fontsReady;
+    const blob = await compose(captureR.canvas, w, h, film);
+    await addPhoto(blob, film);
+  } catch (e) {
+    console.error(e); toast('GAGAL MENYIMPAN FOTO');
+  } finally {
+    busy = false; $('shutter').classList.remove('busy');
+  }
+}
+$('shutter').addEventListener('click', capture);
 
-            const dataURL = canvas.toDataURL('image/jpeg', 0.9);
-            galleryThumb.src = dataURL; galleryThumb.style.display = 'block';
+function compose(src, w, h, f) {
+  const frame = prefs.frame, round = prefs.round;
+  const padX = frame ? Math.round(w * .05) : 0, padTop = padX, padBot = frame ? Math.round(w * .22) : 0;
+  const out = document.createElement('canvas'); out.width = w + padX * 2; out.height = h + padTop + padBot;
+  const ctx = out.getContext('2d'); const W = out.width, H = out.height;
+  const r = round ? w * .05 : 0;
 
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'gallery-item';
-            const imgEl = document.createElement('img');
-            imgEl.src = dataURL;
-            itemDiv.appendChild(imgEl);
-            
-            itemDiv.addEventListener('click', (e) => handleGalleryItemClick(e, dataURL, itemDiv));
-            galleryGrid.prepend(itemDiv);
-        });
-    </script>
+  // paper (also fills behind rounded corners when there is no frame)
+  ctx.fillStyle = '#f7f6f2'; ctx.fillRect(0, 0, W, H);
+  if (frame) { ctx.globalAlpha = .55; ctx.fillStyle = getPaperPattern(ctx); ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1; }
+
+  ctx.save();
+  if (round) roundRect(ctx, padX, padTop, w, h, r); else { ctx.beginPath(); ctx.rect(padX, padTop, w, h); }
+  ctx.clip();
+  ctx.drawImage(src, padX, padTop, w, h);
+
+  // occasional light leak on disposable-style stocks
+  if (f.leak && Math.random() < .25) {
+    const fromLeft = Math.random() < .5;
+    const g = ctx.createLinearGradient(fromLeft ? padX : padX + w, 0, fromLeft ? padX + w * .4 : padX + w * .6, 0);
+    g.addColorStop(0, 'rgba(255,70,10,.45)'); g.addColorStop(.5, 'rgba(255,140,40,.15)'); g.addColorStop(1, 'rgba(255,140,40,0)');
+    ctx.globalCompositeOperation = 'screen'; ctx.fillStyle = g; ctx.fillRect(padX, padTop, w, h); ctx.globalCompositeOperation = 'source-over';
+  }
+
+  if (prefs.date) {
+    const bw = !!f.bw, off = round ? r * .5 : 0;
+    ctx.font = `${Math.round(h * .045)}px "VT323", monospace`; ctx.textAlign = 'right'; ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = bw ? '#ffffff' : '#ff7b00';
+    ctx.shadowColor = bw ? 'rgba(0,0,0,.8)' : 'rgba(255,94,0,.8)'; ctx.shadowBlur = h * .006; ctx.shadowOffsetX = ctx.shadowOffsetY = h * .0015;
+    ctx.letterSpacing = '0.1em';
+    ctx.fillText(fmtDate(), padX + w - w * .05 - off, padTop + h - h * .05 - off);
+  }
+  ctx.restore();
+
+  if (frame) {
+    ctx.strokeStyle = 'rgba(0,0,0,.12)'; ctx.lineWidth = Math.max(1, w * .002);
+    if (round) { roundRect(ctx, padX, padTop, w, h, r); ctx.stroke(); } else ctx.strokeRect(padX, padTop, w, h);
+    ctx.fillStyle = '#888'; ctx.font = `700 ${Math.round(W * .035)}px 'Oswald', sans-serif`; ctx.textAlign = 'center';
+    ctx.fillText(f.label, W / 2, H - padBot / 2.5);
+  }
+  return new Promise(res => out.toBlob(res, 'image/jpeg', .92));
+}
+
+/* =====================================================================
+   LIBRARY
+   ===================================================================== */
+const grid = $('grid');
+let selecting = false; const selected = new Set(); let viewIdx = 0;
+
+async function addPhoto(blob, f) {
+  const p = { id: Date.now() + '-' + Math.random().toString(36).slice(2, 7), blob, film: f.name, created: Date.now() };
+  p.url = URL.createObjectURL(blob);
+  photos.unshift(p); store.put({ id: p.id, blob, film: p.film, created: p.created });
+  renderThumb(); renderGrid();
+}
+function renderThumb() {
+  const img = $('thumb-img'), c = $('thumb-count');
+  if (photos[0]) { img.src = photos[0].url; img.style.display = 'block'; c.textContent = photos.length; c.style.display = 'grid'; }
+  else { img.style.display = 'none'; c.style.display = 'none'; }
+}
+function renderGrid() {
+  grid.innerHTML = '';
+  $('lib-count').textContent = `${photos.length} foto`;
+  if (!photos.length) { grid.innerHTML = '<div class="empty">Belum ada foto.<br>Jepret sesuatu dulu 📷</div>'; return; }
+  photos.forEach((p, i) => {
+    const cell = document.createElement('div'); cell.className = 'cell' + (selected.has(p.id) ? ' sel' : '');
+    cell.innerHTML = `<img src="${p.url}" alt="" loading="lazy"><span class="chk"></span>`;
+    cell.addEventListener('click', () => {
+      if (selecting) { selected.has(p.id) ? selected.delete(p.id) : selected.add(p.id); cell.classList.toggle('sel'); updateBar(); }
+      else openViewer(i);
+    });
+    grid.appendChild(cell);
+  });
+}
+function updateBar() {
+  $('sel-count').textContent = selected.size;
+  $('lib-bar').classList.toggle('show', selecting);
+  $('multi-share').disabled = $('multi-del').disabled = !selected.size;
+}
+function setSelecting(on) {
+  selecting = on; selected.clear(); $('select-btn').textContent = on ? 'Batal' : 'Pilih';
+  grid.classList.toggle('selecting', on); grid.querySelectorAll('.cell').forEach(c => c.classList.remove('sel')); updateBar();
+}
+$('select-btn').addEventListener('click', () => setSelecting(!selecting));
+$('thumb').addEventListener('click', () => { renderGrid(); $('library').classList.add('open'); });
+$('lib-close').addEventListener('click', () => { $('library').classList.remove('open'); setSelecting(false); });
+
+const fileOf = p => new File([p.blob], `dispo_${p.created}.jpg`, { type: 'image/jpeg' });
+function download(p) { const a = document.createElement('a'); a.href = p.url; a.download = `dispo_${p.created}.jpg`; document.body.appendChild(a); a.click(); a.remove(); }
+async function shareOrSave(list) {
+  const files = list.map(fileOf);
+  if (navigator.canShare && navigator.canShare({ files })) {
+    try { await navigator.share({ files }); return true; } catch (e) { return e.name !== 'AbortError' ? (list.forEach(download), true) : false; }
+  }
+  list.forEach((p, i) => setTimeout(() => download(p), i * 300)); return true;
+}
+async function deletePhotos(ids) {
+  ids.forEach(id => { const p = photos.find(x => x.id === id); if (p) URL.revokeObjectURL(p.url); store.del(id); });
+  photos = photos.filter(p => !ids.includes(p.id)); renderThumb(); renderGrid();
+}
+$('multi-share').addEventListener('click', async () => {
+  if (!selected.size) return;
+  if (await shareOrSave(photos.filter(p => selected.has(p.id)))) setSelecting(false);
+});
+$('multi-del').addEventListener('click', async () => {
+  if (!selected.size || !confirm(`Hapus ${selected.size} foto?`)) return;
+  await deletePhotos([...selected]); setSelecting(false);
+});
+
+/* ---------- Viewer ---------- */
+function openViewer(i) { viewIdx = i; showViewer(); $('viewer').classList.add('open'); }
+function showViewer() {
+  const p = photos[viewIdx]; if (!p) { $('viewer').classList.remove('open'); return; }
+  $('view-img').src = p.url;
+  const d = new Date(p.created);
+  $('view-title').firstChild.textContent = p.film;
+  $('view-sub').textContent = `${viewIdx + 1}/${photos.length} · ${d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })} ${d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}`;
+}
+function stepViewer(dir) { const n = viewIdx + dir; if (n >= 0 && n < photos.length) { viewIdx = n; showViewer(); } }
+$('view-close').addEventListener('click', () => $('viewer').classList.remove('open'));
+$('view-share').addEventListener('click', () => photos[viewIdx] && shareOrSave([photos[viewIdx]]));
+$('view-save').addEventListener('click', () => photos[viewIdx] && download(photos[viewIdx]));
+$('view-del').addEventListener('click', async () => {
+  const p = photos[viewIdx]; if (!p || !confirm('Hapus foto ini?')) return;
+  await deletePhotos([p.id]);
+  if (!photos.length) { $('viewer').classList.remove('open'); return; }
+  viewIdx = Math.min(viewIdx, photos.length - 1); showViewer();
+});
+(() => {
+  let x0 = null; const st = $('view-stage');
+  st.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+  st.addEventListener('touchend', e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 50) stepViewer(dx < 0 ? 1 : -1); });
+})();
+function closeTop() {
+  if ($('viewer').classList.contains('open')) $('viewer').classList.remove('open');
+  else { $('library').classList.remove('open'); setSelecting(false); }
+}
+
+/* =====================================================================
+   BOOT
+   ===================================================================== */
+document.querySelectorAll('button').forEach(b => b.addEventListener('contextmenu', e => e.preventDefault()));
+const tickDate = () => { $('stamp').textContent = fmtDate(); };
+tickDate(); setInterval(tickDate, 60000);
+applyToggles();
+setFilm(film, false);
+requestAnimationFrame(() => { const el = strip.querySelector(`[data-id="${film.id}"]`); if (el) strip.scrollLeft = el.offsetLeft - strip.clientWidth / 2 + el.clientWidth / 2; });
+store.all().then(list => {
+  if (!list) return;
+  photos = list.sort((a, b) => b.created - a.created).map(p => Object.assign(p, { url: URL.createObjectURL(p.blob) }));
+  renderThumb();
+});
+initCamera();
+document.addEventListener('visibilitychange', () => { if (!document.hidden && (!stream || stream.getVideoTracks().every(t => t.readyState === 'ended'))) initCamera(); });
+})();
+</script>
 </body>
 </html>
