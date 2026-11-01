@@ -1,0 +1,11 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "dispocam-three.vercel.app" }],
+      "destination": "https://dispocam-by-wolfpuplabs.vercel.app/:path*",
+      "permanent": true
+    }
+  ]
+}
