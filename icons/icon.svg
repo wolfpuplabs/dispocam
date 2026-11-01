@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1c1c20"/><stop offset="1" stop-color="#0b0b0c"/></linearGradient>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5cff3f"/><stop offset="1" stop-color="#2bd40e"/></linearGradient>
+    <radialGradient id="glass" cx=".38" cy=".35" r=".75"><stop offset="0" stop-color="#3a4a66"/><stop offset=".45" stop-color="#141a26"/><stop offset="1" stop-color="#050608"/></radialGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <g id="cam">
+    <!-- shutter button -->
+    <rect x="330" y="134" width="62" height="26" rx="10" fill="#e9e9e9"/>
+    <!-- body -->
+    <rect x="72" y="150" width="368" height="230" rx="38" fill="url(#body)"/>
+    <rect x="72" y="150" width="368" height="230" rx="38" fill="none" stroke="#000" stroke-opacity=".18" stroke-width="4"/>
+    <!-- dark label band -->
+    <path d="M72 300h368v42a38 38 0 0 1-38 38H110a38 38 0 0 1-38-38z" fill="#111"/>
+    <rect x="104" y="326" width="62" height="10" rx="5" fill="#39FF14" opacity=".9"/>
+    <rect x="174" y="326" width="18" height="10" rx="5" fill="#ff7b00"/>
+    <!-- viewfinder -->
+    <rect x="102" y="180" width="70" height="46" rx="10" fill="#0b0b0c"/>
+    <rect x="110" y="188" width="24" height="12" rx="4" fill="#fff" opacity=".18"/>
+    <!-- flash -->
+    <rect x="102" y="240" width="70" height="38" rx="8" fill="#f4f4f4"/>
+    <path d="M114 248v22M126 248v22M138 248v22M150 248v22M162 248v22" stroke="#cfcfcf" stroke-width="4"/>
+    <!-- lens -->
+    <circle cx="300" cy="258" r="96" fill="#111"/>
+    <circle cx="300" cy="258" r="80" fill="#2a2a2e"/>
+    <circle cx="300" cy="258" r="64" fill="url(#glass)"/>
+    <circle cx="300" cy="258" r="64" fill="none" stroke="#000" stroke-width="6"/>
+    <ellipse cx="278" cy="234" rx="20" ry="13" fill="#fff" opacity=".55" transform="rotate(-30 278 234)"/>
+    <circle cx="328" cy="286" r="6" fill="#fff" opacity=".25"/>
+  </g>
+</svg>
