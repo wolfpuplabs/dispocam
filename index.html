@@ -49,14 +49,15 @@
   .app { height: 100vh; height: 100dvh; max-width: 520px; margin: 0 auto; display: flex; flex-direction: column; padding-top: var(--safe-t); }
 
   /* ---------- Top bar ---------- */
-  .top { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; padding: 12px 16px 8px; }
-  .tgroup { display: flex; gap: 8px; }
-  .tbtn { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--surface); border: 1px solid var(--line); color: var(--muted); transition: background .2s, color .2s, border-color .2s; }
+  .top { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; padding: 12px 14px 8px; }
+  .tgroup { display: flex; gap: 6px; }
+  .tbtn { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: var(--surface); border: 1px solid var(--line); color: var(--muted); transition: background .2s, color .2s, border-color .2s; }
+  .tbtn.lang { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: .5px; color: var(--text); }
   .tbtn.on { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
   .brand { text-align: center; min-width: 0; }
-  .brand-name { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 18px; letter-spacing: 2px; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .brand-sub { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-top: 1px; }
-  .brand-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-right: 6px; vertical-align: 1px; box-shadow: 0 0 8px var(--accent); }
+  .brand-name { font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 17px; letter-spacing: 1.5px; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .brand-sub { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-top: 1px; padding: 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .brand-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-right: 6px; vertical-align: 1px; }
 
   /* ---------- Viewfinder ---------- */
   .vf-wrap { flex: 1; min-height: 0; display: grid; place-items: center; padding: 6px 16px; container-type: size; }
@@ -145,16 +146,17 @@
 <div class="app">
   <header class="top">
     <div class="tgroup">
-      <button class="tbtn" id="flash-btn" aria-label="Flash"><svg class="i" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></button>
-      <button class="tbtn" id="date-btn" aria-label="Date stamp"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></button>
+      <button class="tbtn" id="flash-btn" data-i18n-aria="flash" aria-label="Flash"><svg class="i" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></button>
+      <button class="tbtn" id="date-btn" data-i18n-aria="dateStamp" aria-label="Date stamp"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></button>
     </div>
     <div class="brand">
       <div class="brand-name" id="brand-name">DISPO</div>
       <div class="brand-sub"><span class="brand-dot"></span><span id="brand-sub">Disposable</span></div>
     </div>
     <div class="tgroup">
-      <button class="tbtn" id="frame-btn" aria-label="Paper frame"><svg class="i" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1"/><rect x="7" y="6" width="10" height="9"/></svg></button>
-      <button class="tbtn" id="round-btn" aria-label="Rounded corners"><svg class="i" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="5"/></svg></button>
+      <button class="tbtn" id="frame-btn" data-i18n-aria="paperFrame" aria-label="Paper frame"><svg class="i" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1"/><rect x="7" y="6" width="10" height="9"/></svg></button>
+      <button class="tbtn" id="round-btn" data-i18n-aria="rounded" aria-label="Rounded corners"><svg class="i" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="5"/></svg></button>
+      <button class="tbtn lang" id="lang-btn" data-i18n-aria="language" aria-label="Language">EN</button>
     </div>
   </header>
 
@@ -170,7 +172,7 @@
       <div class="blink" id="blink"></div>
       <div class="vf-msg" id="vf-msg">
         <div id="vf-msg-text">Allow camera access to start shooting.</div>
-        <button class="pill" id="retry-btn">Try again</button>
+        <button class="pill" id="retry-btn" data-i18n="tryAgain">Try again</button>
       </div>
     </div>
   </div>
@@ -178,38 +180,38 @@
   <div class="strip-wrap"><div class="strip" id="strip"></div></div>
 
   <div class="controls">
-    <button class="thumb" id="thumb" aria-label="Library"><img id="thumb-img" alt=""><span class="count" id="thumb-count"></span></button>
-    <button class="shutter" id="shutter" aria-label="Take photo"><span></span></button>
-    <button class="flip" id="flip-btn" aria-label="Switch camera"><svg class="i" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg></button>
+    <button class="thumb" id="thumb" data-i18n-aria="library" aria-label="Library"><img id="thumb-img" alt=""><span class="count" id="thumb-count"></span></button>
+    <button class="shutter" id="shutter" data-i18n-aria="takePhoto" aria-label="Take photo"><span></span></button>
+    <button class="flip" id="flip-btn" data-i18n-aria="switchCamera" aria-label="Switch camera"><svg class="i" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg></button>
   </div>
 </div>
 
 <!-- Library -->
 <section class="sheet" id="library">
   <div class="sheet-head">
-    <button class="ibtn" id="lib-close" aria-label="Close"><svg class="i" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
-    <div class="sheet-title">Library<small id="lib-count">0 photos</small></div>
+    <button class="ibtn" id="lib-close" data-i18n-aria="close" aria-label="Close"><svg class="i" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+    <div class="sheet-title"><span data-i18n="library">Library</span><small id="lib-count">0 photos</small></div>
     <button class="txt accent" id="select-btn">Select</button>
   </div>
   <div class="grid" id="grid"></div>
   <div class="bar" id="lib-bar">
-    <button class="danger" id="multi-del" aria-label="Delete"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>
-    <button class="primary" id="multi-share"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Save / Share (<span id="sel-count">0</span>)</button>
+    <button class="danger" id="multi-del" data-i18n-aria="delete" aria-label="Delete"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>
+    <button class="primary" id="multi-share"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span data-i18n="saveShare">Save / Share</span> (<span id="sel-count">0</span>)</button>
   </div>
 </section>
 
 <!-- Viewer -->
 <section class="sheet" id="viewer">
   <div class="sheet-head">
-    <button class="ibtn" id="view-close" aria-label="Back"><svg class="i" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></svg></button>
+    <button class="ibtn" id="view-close" data-i18n-aria="back" aria-label="Back"><svg class="i" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></svg></button>
     <div class="sheet-title" id="view-title">Photo<small id="view-sub"></small></div>
     <span></span>
   </div>
   <div class="viewer" id="view-stage"><img id="view-img" alt="Photo"></div>
   <div class="bar show">
-    <button class="danger" id="view-del" aria-label="Delete"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>
-    <button id="view-save"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Save</button>
-    <button class="primary" id="view-share"><svg class="i" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>Share</button>
+    <button class="danger" id="view-del" data-i18n-aria="delete" aria-label="Delete"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>
+    <button id="view-save"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span data-i18n="save">Save</span></button>
+    <button class="primary" id="view-share"><svg class="i" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg><span data-i18n="share">Share</span></button>
   </div>
 </section>
 
@@ -427,9 +429,43 @@ const store = {
    ===================================================================== */
 const $ = id => document.getElementById(id);
 const video = $('video'), preview = $('preview'), vf = $('vf');
-const prefs = Object.assign({ film: 'dispo', flash: false, date: true, frame: true, round: false, facing: 'environment' },
+const prefs = Object.assign({ lang: 'en', film: 'dispo', flash: false, date: true, frame: true, round: false, facing: 'environment' },
   JSON.parse(localStorage.getItem('dispocam-prefs') || '{}'));
 const savePrefs = () => localStorage.setItem('dispocam-prefs', JSON.stringify(prefs));
+
+/* ---------- Language (EN default, ID optional) ---------- */
+const I18N = {
+  en: {
+    locale: 'en-US', flash: 'Flash', dateStamp: 'Date stamp', paperFrame: 'Paper frame', rounded: 'Rounded corners', language: 'Language',
+    date: 'Date', frame: 'Frame', round: 'Rounded', on: 'ON', off: 'OFF',
+    tryAgain: 'Try again', library: 'Library', takePhoto: 'Take photo', switchCamera: 'Switch camera', close: 'Close', back: 'Back',
+    delete: 'Delete', save: 'Save', share: 'Share', saveShare: 'Save / Share', select: 'Select', cancel: 'Cancel',
+    photos: n => `${n} ${n === 1 ? 'photo' : 'photos'}`, empty: 'No photos yet.<br>Go shoot something 📷',
+    confirmDeleteMany: n => `Delete ${n} ${n === 1 ? 'photo' : 'photos'}?`, confirmDeleteOne: 'Delete this photo?',
+    saveFailed: 'COULD NOT SAVE PHOTO',
+    msgAllow: 'Allow camera access to start shooting.',
+    msgUnsupported: 'This browser does not support the camera. Open it over HTTPS in Safari or Chrome.',
+    msgDenied: 'Camera access was denied. Allow the camera in your browser settings and try again.',
+    msgBusy: 'Could not open the camera. Make sure no other app is using it.',
+    msgWebgl: 'This device does not support WebGL, so film filters cannot run.',
+  },
+  id: {
+    locale: 'id-ID', flash: 'Flash', dateStamp: 'Cap tanggal', paperFrame: 'Bingkai kertas', rounded: 'Sudut bulat', language: 'Bahasa',
+    date: 'Tanggal', frame: 'Bingkai', round: 'Sudut bulat', on: 'ON', off: 'OFF',
+    tryAgain: 'Coba lagi', library: 'Galeri', takePhoto: 'Ambil foto', switchCamera: 'Ganti kamera', close: 'Tutup', back: 'Kembali',
+    delete: 'Hapus', save: 'Simpan', share: 'Bagikan', saveShare: 'Simpan / Bagikan', select: 'Pilih', cancel: 'Batal',
+    photos: n => `${n} foto`, empty: 'Belum ada foto.<br>Jepret sesuatu dulu 📷',
+    confirmDeleteMany: n => `Hapus ${n} foto?`, confirmDeleteOne: 'Hapus foto ini?',
+    saveFailed: 'GAGAL MENYIMPAN FOTO',
+    msgAllow: 'Izinkan akses kamera untuk mulai memotret.',
+    msgUnsupported: 'Browser ini tidak mendukung kamera. Buka lewat HTTPS di Safari / Chrome.',
+    msgDenied: 'Akses kamera ditolak. Izinkan kamera di pengaturan browser lalu coba lagi.',
+    msgBusy: 'Kamera tidak bisa dibuka. Pastikan tidak sedang dipakai aplikasi lain.',
+    msgWebgl: 'Perangkat ini tidak mendukung WebGL, filter tidak bisa dijalankan.',
+  },
+};
+if (!I18N[prefs.lang]) prefs.lang = 'en';
+const t = (key, ...args) => { const v = I18N[prefs.lang][key] ?? I18N.en[key]; return typeof v === 'function' ? v(...args) : v; };
 let film = FILMS.find(f => f.id === prefs.film) || FILMS[0];
 let stream = null, torchOK = false, busy = false;
 let photos = [];                    // newest first: {id, blob, url, film, created}
@@ -477,16 +513,17 @@ function applyToggles() {
   // Frame output: width 1.10w, height (4/3 + .05 + .22)w  ->  same proportions as the saved file
   document.documentElement.style.setProperty('--vf-ratio', prefs.frame ? (1.1 / (4/3 + .27)).toFixed(5) : '0.75');
 }
-[['flash-btn','flash','Flash'], ['date-btn','date','Date'], ['frame-btn','frame','Frame'], ['round-btn','round','Rounded']].forEach(([id, key, label]) => {
-  $(id).addEventListener('click', () => { prefs[key] = !prefs[key]; savePrefs(); applyToggles(); toast(`${label.toUpperCase()} ${prefs[key] ? 'ON' : 'OFF'}`); vibrate(6); });
+[['flash-btn','flash','flash'], ['date-btn','date','date'], ['frame-btn','frame','frame'], ['round-btn','round','round']].forEach(([id, key, label]) => {
+  $(id).addEventListener('click', () => { prefs[key] = !prefs[key]; savePrefs(); applyToggles(); toast(`${t(label).toUpperCase()} ${t(prefs[key] ? 'on' : 'off')}`); vibrate(6); });
 });
 
 /* ---------- Camera ---------- */
-function showMsg(text) { $('vf-msg-text').textContent = text; $('vf-msg').classList.add('show'); }
+let msgKey = 'msgAllow';
+function showMsg(key) { msgKey = key; $('vf-msg-text').textContent = t(key); $('vf-msg').classList.add('show'); }
 async function initCamera() {
   $('vf-msg').classList.remove('show');
   if (stream) stream.getTracks().forEach(t => t.stop());
-  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { showMsg('This browser does not support the camera. Open it over HTTPS in Safari or Chrome.'); return; }
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { showMsg('msgUnsupported'); return; }
   try {
     stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: prefs.facing, width: { ideal: 1920 }, height: { ideal: 1440 } } });
     video.srcObject = stream;
@@ -495,7 +532,7 @@ async function initCamera() {
     const caps = track.getCapabilities ? track.getCapabilities() : {};
     torchOK = !!caps.torch;
   } catch (err) {
-    showMsg(err && err.name === 'NotAllowedError' ? 'Camera access was denied. Allow the camera in your browser settings and try again.' : 'Could not open the camera. Make sure no other app is using it.');
+    showMsg(err && err.name === 'NotAllowedError' ? 'msgDenied' : 'msgBusy');
   }
 }
 $('retry-btn').addEventListener('click', initCamera);
@@ -511,7 +548,7 @@ function cropFor(vw, vh) {   // centred 3:4 cover crop, in texture UV
 
 /* ---------- Live preview loop ---------- */
 try { previewR = new FilmRenderer(preview, false); }
-catch (e) { showMsg('This device does not support WebGL, so film filters cannot run.'); }
+catch (e) { showMsg('msgWebgl'); }
 
 let frameN = 0, seed = 0;
 function loop() {
@@ -591,7 +628,7 @@ async function capture() {
     const blob = await compose(captureR.canvas, w, h, film);
     await addPhoto(blob, film);
   } catch (e) {
-    console.error(e); toast('COULD NOT SAVE PHOTO');
+    console.error(e); toast(t('saveFailed'));
   } finally {
     busy = false; $('shutter').classList.remove('busy');
   }
@@ -660,8 +697,8 @@ function renderThumb() {
 }
 function renderGrid() {
   grid.innerHTML = '';
-  $('lib-count').textContent = `${photos.length} ${photos.length === 1 ? 'photo' : 'photos'}`;
-  if (!photos.length) { grid.innerHTML = '<div class="empty">No photos yet.<br>Go shoot something 📷</div>'; return; }
+  $('lib-count').textContent = t('photos', photos.length);
+  if (!photos.length) { grid.innerHTML = `<div class="empty">${t('empty')}</div>`; return; }
   photos.forEach((p, i) => {
     const cell = document.createElement('div'); cell.className = 'cell' + (selected.has(p.id) ? ' sel' : '');
     cell.innerHTML = `<img src="${p.url}" alt="" loading="lazy"><span class="chk"></span>`;
@@ -678,7 +715,7 @@ function updateBar() {
   $('multi-share').disabled = $('multi-del').disabled = !selected.size;
 }
 function setSelecting(on) {
-  selecting = on; selected.clear(); $('select-btn').textContent = on ? 'Cancel' : 'Select';
+  selecting = on; selected.clear(); $('select-btn').textContent = t(on ? 'cancel' : 'select');
   grid.classList.toggle('selecting', on); grid.querySelectorAll('.cell').forEach(c => c.classList.remove('sel')); updateBar();
 }
 $('select-btn').addEventListener('click', () => setSelecting(!selecting));
@@ -703,7 +740,7 @@ $('multi-share').addEventListener('click', async () => {
   if (await shareOrSave(photos.filter(p => selected.has(p.id)))) setSelecting(false);
 });
 $('multi-del').addEventListener('click', async () => {
-  if (!selected.size || !confirm(`Delete ${selected.size} ${selected.size === 1 ? 'photo' : 'photos'}?`)) return;
+  if (!selected.size || !confirm(t('confirmDeleteMany', selected.size))) return;
   await deletePhotos([...selected]); setSelecting(false);
 });
 
@@ -714,14 +751,14 @@ function showViewer() {
   $('view-img').src = p.url;
   const d = new Date(p.created);
   $('view-title').firstChild.textContent = p.film;
-  $('view-sub').textContent = `${viewIdx + 1}/${photos.length} · ${d.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })} ${d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}`;
+  $('view-sub').textContent = `${viewIdx + 1}/${photos.length} · ${d.toLocaleDateString(t('locale'), { day: 'numeric', month: 'short', year: 'numeric' })} ${d.toLocaleTimeString(t('locale'), { hour: '2-digit', minute: '2-digit' })}`;
 }
 function stepViewer(dir) { const n = viewIdx + dir; if (n >= 0 && n < photos.length) { viewIdx = n; showViewer(); } }
 $('view-close').addEventListener('click', () => $('viewer').classList.remove('open'));
 $('view-share').addEventListener('click', () => photos[viewIdx] && shareOrSave([photos[viewIdx]]));
 $('view-save').addEventListener('click', () => photos[viewIdx] && download(photos[viewIdx]));
 $('view-del').addEventListener('click', async () => {
-  const p = photos[viewIdx]; if (!p || !confirm('Delete this photo?')) return;
+  const p = photos[viewIdx]; if (!p || !confirm(t('confirmDeleteOne'))) return;
   await deletePhotos([p.id]);
   if (!photos.length) { $('viewer').classList.remove('open'); return; }
   viewIdx = Math.min(viewIdx, photos.length - 1); showViewer();
@@ -742,6 +779,21 @@ function closeTop() {
 document.querySelectorAll('button').forEach(b => b.addEventListener('contextmenu', e => e.preventDefault()));
 const tickDate = () => { $('stamp').textContent = fmtDate(); };
 tickDate(); setInterval(tickDate, 60000);
+function applyLang() {
+  document.documentElement.lang = prefs.lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-aria]').forEach(el => el.setAttribute('aria-label', t(el.dataset.i18nAria)));
+  $('lang-btn').textContent = prefs.lang.toUpperCase();
+  $('select-btn').textContent = t(selecting ? 'cancel' : 'select');
+  $('vf-msg-text').textContent = t(msgKey);
+  renderGrid();
+  if ($('viewer').classList.contains('open')) showViewer();
+}
+$('lang-btn').addEventListener('click', () => {
+  prefs.lang = prefs.lang === 'en' ? 'id' : 'en'; savePrefs(); applyLang();
+  toast(prefs.lang === 'en' ? 'ENGLISH' : 'BAHASA INDONESIA'); vibrate(6);
+});
+applyLang();
 applyToggles();
 setFilm(film, false);
 requestAnimationFrame(() => { const el = strip.querySelector(`[data-id="${film.id}"]`); if (el) strip.scrollLeft = el.offsetLeft - strip.clientWidth / 2 + el.clientWidth / 2; });
