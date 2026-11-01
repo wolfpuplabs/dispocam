@@ -8,4 +8,4 @@
 - Seluruh aplikasi ada di `index.html` (HTML + CSS + JS, tanpa build step).
 - Filter film dirender oleh satu shader WebGL (`FilmRenderer`) yang dipakai untuk live preview dan capture, jadi hasil foto harus selalu sama dengan preview.
 - Resep film ada di array `FILMS`; nilai default di `BASE`.
-- UI dan pesan untuk pengguna memakai Bahasa Indonesia.
+- Bahasa default UI, pesan, dan metadata adalah English.
