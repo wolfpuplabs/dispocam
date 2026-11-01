@@ -1,7 +1,7 @@
 {
   "name": "Dispo Cam",
   "short_name": "Dispo Cam",
-  "description": "Kamera film sekali pakai di browser. 18 film klasik, grain asli, cap tanggal.",
+  "description": "A disposable film camera in your browser. 18 classic film stocks, real grain, date stamp.",
   "id": "./",
   "start_url": "./",
   "scope": "./",
@@ -9,7 +9,7 @@
   "orientation": "portrait",
   "background_color": "#0b0b0c",
   "theme_color": "#0b0b0c",
-  "lang": "id",
+  "lang": "en",
   "categories": ["photo"],
   "icons": [
     { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },

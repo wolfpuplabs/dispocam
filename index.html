@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Dispo Cam">
 <meta name="theme-color" content="#0b0b0c">
-<meta name="description" content="Kamera film sekali pakai di browser. 18 film klasik, grain asli, cap tanggal.">
+<meta name="description" content="A disposable film camera in your browser. 18 classic film stocks, real grain, date stamp.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
@@ -17,17 +17,17 @@
 <!-- Link preview (WhatsApp, IG, X, Telegram, iMessage) -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Dispo Cam">
-<meta property="og:title" content="Dispo Cam: kamera film di browser">
-<meta property="og:description" content="18 film klasik, grain asli, cap tanggal. Langsung jepret, tanpa install.">
+<meta property="og:title" content="Dispo Cam: a film camera in your browser">
+<meta property="og:description" content="18 classic film stocks, real grain, date stamp. Just shoot, no install.">
 <meta property="og:url" content="https://dispocam-by-wolfpuplabs.vercel.app/">
 <meta property="og:image" content="https://dispocam-by-wolfpuplabs.vercel.app/icons/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Dispo Cam: ikon kamera sekali pakai dan contoh foto berbingkai">
-<meta property="og:locale" content="id_ID">
+<meta property="og:image:alt" content="Dispo Cam: disposable camera icon and a framed sample print">
+<meta property="og:locale" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Dispo Cam: kamera film di browser">
-<meta name="twitter:description" content="18 film klasik, grain asli, cap tanggal. Langsung jepret, tanpa install.">
+<meta name="twitter:title" content="Dispo Cam: a film camera in your browser">
+<meta name="twitter:description" content="18 classic film stocks, real grain, date stamp. Just shoot, no install.">
 <meta name="twitter:image" content="https://dispocam-by-wolfpuplabs.vercel.app/icons/og-image.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -169,8 +169,8 @@
       <div class="toast" id="toast"></div>
       <div class="blink" id="blink"></div>
       <div class="vf-msg" id="vf-msg">
-        <div id="vf-msg-text">Izinkan akses kamera untuk mulai memotret.</div>
-        <button class="pill" id="retry-btn">Coba lagi</button>
+        <div id="vf-msg-text">Allow camera access to start shooting.</div>
+        <button class="pill" id="retry-btn">Try again</button>
       </div>
     </div>
   </div>
@@ -179,37 +179,37 @@
 
   <div class="controls">
     <button class="thumb" id="thumb" aria-label="Library"><img id="thumb-img" alt=""><span class="count" id="thumb-count"></span></button>
-    <button class="shutter" id="shutter" aria-label="Ambil foto"><span></span></button>
-    <button class="flip" id="flip-btn" aria-label="Ganti kamera"><svg class="i" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg></button>
+    <button class="shutter" id="shutter" aria-label="Take photo"><span></span></button>
+    <button class="flip" id="flip-btn" aria-label="Switch camera"><svg class="i" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.3-4.9L4 8"/><path d="M4 3v5h5"/><path d="M4 13a8 8 0 0 0 14.3 4.9L20 16"/><path d="M20 21v-5h-5"/></svg></button>
   </div>
 </div>
 
 <!-- Library -->
 <section class="sheet" id="library">
   <div class="sheet-head">
-    <button class="ibtn" id="lib-close" aria-label="Tutup"><svg class="i" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
-    <div class="sheet-title">Library<small id="lib-count">0 foto</small></div>
-    <button class="txt accent" id="select-btn">Pilih</button>
+    <button class="ibtn" id="lib-close" aria-label="Close"><svg class="i" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+    <div class="sheet-title">Library<small id="lib-count">0 photos</small></div>
+    <button class="txt accent" id="select-btn">Select</button>
   </div>
   <div class="grid" id="grid"></div>
   <div class="bar" id="lib-bar">
-    <button class="danger" id="multi-del" aria-label="Hapus"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>
-    <button class="primary" id="multi-share"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Simpan / Bagikan (<span id="sel-count">0</span>)</button>
+    <button class="danger" id="multi-del" aria-label="Delete"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>
+    <button class="primary" id="multi-share"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Save / Share (<span id="sel-count">0</span>)</button>
   </div>
 </section>
 
 <!-- Viewer -->
 <section class="sheet" id="viewer">
   <div class="sheet-head">
-    <button class="ibtn" id="view-close" aria-label="Kembali"><svg class="i" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></svg></button>
-    <div class="sheet-title" id="view-title">Foto<small id="view-sub"></small></div>
+    <button class="ibtn" id="view-close" aria-label="Back"><svg class="i" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></svg></button>
+    <div class="sheet-title" id="view-title">Photo<small id="view-sub"></small></div>
     <span></span>
   </div>
-  <div class="viewer" id="view-stage"><img id="view-img" alt="Foto"></div>
+  <div class="viewer" id="view-stage"><img id="view-img" alt="Photo"></div>
   <div class="bar show">
-    <button class="danger" id="view-del" aria-label="Hapus"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>
-    <button id="view-save"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Simpan</button>
-    <button class="primary" id="view-share"><svg class="i" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>Bagikan</button>
+    <button class="danger" id="view-del" aria-label="Delete"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>
+    <button id="view-save"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Save</button>
+    <button class="primary" id="view-share"><svg class="i" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>Share</button>
   </div>
 </section>
 
@@ -477,7 +477,7 @@ function applyToggles() {
   // Frame output: width 1.10w, height (4/3 + .05 + .22)w  ->  same proportions as the saved file
   document.documentElement.style.setProperty('--vf-ratio', prefs.frame ? (1.1 / (4/3 + .27)).toFixed(5) : '0.75');
 }
-[['flash-btn','flash','Flash'], ['date-btn','date','Tanggal'], ['frame-btn','frame','Bingkai'], ['round-btn','round','Sudut bulat']].forEach(([id, key, label]) => {
+[['flash-btn','flash','Flash'], ['date-btn','date','Date'], ['frame-btn','frame','Frame'], ['round-btn','round','Rounded']].forEach(([id, key, label]) => {
   $(id).addEventListener('click', () => { prefs[key] = !prefs[key]; savePrefs(); applyToggles(); toast(`${label.toUpperCase()} ${prefs[key] ? 'ON' : 'OFF'}`); vibrate(6); });
 });
 
@@ -486,7 +486,7 @@ function showMsg(text) { $('vf-msg-text').textContent = text; $('vf-msg').classL
 async function initCamera() {
   $('vf-msg').classList.remove('show');
   if (stream) stream.getTracks().forEach(t => t.stop());
-  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { showMsg('Browser ini tidak mendukung kamera. Buka lewat HTTPS di Safari / Chrome.'); return; }
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { showMsg('This browser does not support the camera. Open it over HTTPS in Safari or Chrome.'); return; }
   try {
     stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: prefs.facing, width: { ideal: 1920 }, height: { ideal: 1440 } } });
     video.srcObject = stream;
@@ -495,7 +495,7 @@ async function initCamera() {
     const caps = track.getCapabilities ? track.getCapabilities() : {};
     torchOK = !!caps.torch;
   } catch (err) {
-    showMsg(err && err.name === 'NotAllowedError' ? 'Akses kamera ditolak. Izinkan kamera di pengaturan browser lalu coba lagi.' : 'Kamera tidak bisa dibuka. Pastikan tidak sedang dipakai aplikasi lain.');
+    showMsg(err && err.name === 'NotAllowedError' ? 'Camera access was denied. Allow the camera in your browser settings and try again.' : 'Could not open the camera. Make sure no other app is using it.');
   }
 }
 $('retry-btn').addEventListener('click', initCamera);
@@ -511,7 +511,7 @@ function cropFor(vw, vh) {   // centred 3:4 cover crop, in texture UV
 
 /* ---------- Live preview loop ---------- */
 try { previewR = new FilmRenderer(preview, false); }
-catch (e) { showMsg('Perangkat ini tidak mendukung WebGL, filter tidak bisa dijalankan.'); }
+catch (e) { showMsg('This device does not support WebGL, so film filters cannot run.'); }
 
 let frameN = 0, seed = 0;
 function loop() {
@@ -591,7 +591,7 @@ async function capture() {
     const blob = await compose(captureR.canvas, w, h, film);
     await addPhoto(blob, film);
   } catch (e) {
-    console.error(e); toast('GAGAL MENYIMPAN FOTO');
+    console.error(e); toast('COULD NOT SAVE PHOTO');
   } finally {
     busy = false; $('shutter').classList.remove('busy');
   }
@@ -660,8 +660,8 @@ function renderThumb() {
 }
 function renderGrid() {
   grid.innerHTML = '';
-  $('lib-count').textContent = `${photos.length} foto`;
-  if (!photos.length) { grid.innerHTML = '<div class="empty">Belum ada foto.<br>Jepret sesuatu dulu 📷</div>'; return; }
+  $('lib-count').textContent = `${photos.length} ${photos.length === 1 ? 'photo' : 'photos'}`;
+  if (!photos.length) { grid.innerHTML = '<div class="empty">No photos yet.<br>Go shoot something 📷</div>'; return; }
   photos.forEach((p, i) => {
     const cell = document.createElement('div'); cell.className = 'cell' + (selected.has(p.id) ? ' sel' : '');
     cell.innerHTML = `<img src="${p.url}" alt="" loading="lazy"><span class="chk"></span>`;
@@ -678,7 +678,7 @@ function updateBar() {
   $('multi-share').disabled = $('multi-del').disabled = !selected.size;
 }
 function setSelecting(on) {
-  selecting = on; selected.clear(); $('select-btn').textContent = on ? 'Batal' : 'Pilih';
+  selecting = on; selected.clear(); $('select-btn').textContent = on ? 'Cancel' : 'Select';
   grid.classList.toggle('selecting', on); grid.querySelectorAll('.cell').forEach(c => c.classList.remove('sel')); updateBar();
 }
 $('select-btn').addEventListener('click', () => setSelecting(!selecting));
@@ -703,7 +703,7 @@ $('multi-share').addEventListener('click', async () => {
   if (await shareOrSave(photos.filter(p => selected.has(p.id)))) setSelecting(false);
 });
 $('multi-del').addEventListener('click', async () => {
-  if (!selected.size || !confirm(`Hapus ${selected.size} foto?`)) return;
+  if (!selected.size || !confirm(`Delete ${selected.size} ${selected.size === 1 ? 'photo' : 'photos'}?`)) return;
   await deletePhotos([...selected]); setSelecting(false);
 });
 
@@ -714,14 +714,14 @@ function showViewer() {
   $('view-img').src = p.url;
   const d = new Date(p.created);
   $('view-title').firstChild.textContent = p.film;
-  $('view-sub').textContent = `${viewIdx + 1}/${photos.length} · ${d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })} ${d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}`;
+  $('view-sub').textContent = `${viewIdx + 1}/${photos.length} · ${d.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })} ${d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}`;
 }
 function stepViewer(dir) { const n = viewIdx + dir; if (n >= 0 && n < photos.length) { viewIdx = n; showViewer(); } }
 $('view-close').addEventListener('click', () => $('viewer').classList.remove('open'));
 $('view-share').addEventListener('click', () => photos[viewIdx] && shareOrSave([photos[viewIdx]]));
 $('view-save').addEventListener('click', () => photos[viewIdx] && download(photos[viewIdx]));
 $('view-del').addEventListener('click', async () => {
-  const p = photos[viewIdx]; if (!p || !confirm('Hapus foto ini?')) return;
+  const p = photos[viewIdx]; if (!p || !confirm('Delete this photo?')) return;
   await deletePhotos([p.id]);
   if (!photos.length) { $('viewer').classList.remove('open'); return; }
   viewIdx = Math.min(viewIdx, photos.length - 1); showViewer();
